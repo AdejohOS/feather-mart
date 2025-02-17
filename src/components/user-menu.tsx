@@ -17,9 +17,9 @@ export const UserMenu = () => {
       <DropdownMenuTrigger asChild className="relative outline-none">
         <button className="flex items-center gap-1 border-none stroke-none">
           <User2Icon className="size-10 shrink-0" />
-          <div>
+          <div className="text-start">
             <p className="text-sm">Account</p>
-            <p className="font-medium">LOGIN</p>
+            <p className="font-medium text-sm">Login/Register</p>
           </div>
         </button>
       </DropdownMenuTrigger>
