@@ -1,75 +1,95 @@
-import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
+'use client'
 
-import Link from "next/link";
-import { Input } from "./ui/input";
-import { Search, ShoppingCart } from "lucide-react";
-import { Button } from "./ui/button";
-import { UserMenu } from "./user-menu";
+import { FaWhatsapp } from 'react-icons/fa'
+import { FaPhoneVolume } from 'react-icons/fa6'
+
+import Link from 'next/link'
+import { Input } from './ui/input'
+import { Search, ShoppingCart, User2Icon } from 'lucide-react'
+import { Button } from './ui/button'
+import { UserMenu } from './user-menu'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 export const Navbar = () => {
   return (
-    <header className="">
-      <div className="bg-slate-50 ">
-        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-x-3 text-sm">
-            <div className="flex items-center gap-x-1">
-              <FaPhoneAlt size={15} />
-              <span className="sm">+234 706 349 4394</span>
+    <header className='fixed left-0 top-0 z-50 h-[150px] w-full'>
+      <div className='h-[50px] bg-neutral-50 lg:h-[30px]'>
+        <div className='mx-auto flex h-full max-w-6xl items-center justify-between px-4'>
+          <div className='hidden items-center gap-x-3 text-sm sm:flex'>
+            <div className='flex items-center gap-x-1'>
+              <FaPhoneVolume size={13} />
+              <span className='sm'>+234 706 349 4394</span>
             </div>
-            <div className="flex items-center gap-x-1">
+            <div className='flex items-center gap-x-1'>
               <FaWhatsapp size={15} />
-              <span className="sm">+234 706 349 4394</span>
+              <span className='sm'>+234 706 349 4394</span>
             </div>
           </div>
-          <div>
-            <p className="text-sm">
-              Africa&apos;s Fastest Online Poultry Store{" "}
+          <div className='hidden lg:block'>
+            <p className='text-sm'>
+              Africa&apos;s Fastest Online Poultry Store
             </p>
           </div>
 
-          <div className="flex items-center gap-x-3 text-sm">
-            <Link className="hover:text-[#27667B] transition" href="/faq">
+          <div className='hidden items-center gap-x-3 text-sm lg:flex'>
+            <Link className='transition hover:text-teal-600' href='/faq'>
               Help?
             </Link>
 
             <Link
-              className="hover:text-[#27667B] transition "
-              href="/track-order"
+              className='transition hover:text-teal-600'
+              href='/track-order'
             >
               Track Order?
             </Link>
             <Link
-              className="hover:text-[#27667B] transition "
-              href="/track-order"
+              className='transition hover:text-teal-600'
+              href='/vendor-market'
             >
-              Sell on FeatherMart
+              Sell on FeatherMart!
             </Link>
+          </div>
+          <div className='flex items-center gap-3 text-muted-foreground lg:hidden'>
+            <User2Icon className='size-8 shrink-0' />
+            <div className='relative'>
+              <ShoppingCart className='size-8 shrink-0' />
+              <p className='absolute right-[-4px] top-0 rounded-md bg-teal-700 p-[2px] text-xs font-semibold text-white'>
+                43
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      <nav className=" bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">
-            Feather<span className="text-[#5CAF90]">Mart</span>
+
+      <nav className='h-[100px] bg-white shadow-sm lg:h-[120px]'>
+        <div className='mx-auto flex h-full w-full max-w-6xl flex-col items-center justify-center bg-white px-4 sm:flex-row sm:justify-between md:gap-3'>
+          <h1 className='text-center text-2xl font-bold md:text-3xl'>
+            <Link href='/'>
+              Feather<span className='text-teal-600'>Mart</span>
+            </Link>
           </h1>
-          <div className="w-1/2 relative">
+          <div className='relative w-[400px] md:w-[500px]'>
             <Input
-              placeholder="I am shoping for..."
-              type="search"
-              className="w-full pr-9"
+              placeholder='I am shoping for...'
+              type='search'
+              className='w-full pr-20'
             />
-            <Button className="absolute right-0 top-0 " variant="ghost">
-              <Search />
+            <Button
+              className='absolute right-0 top-0'
+              variant='ghost'
+              size='lg'
+            >
+              <Search className='size-5' />
             </Button>
           </div>
-          <div className="flex items-center gap-x-4">
-            <UserMenu />
 
-            <div className="flex items-center gap-1 ">
-              <ShoppingCart className="size-10" />
+          <div className='hidden gap-4 lg:flex'>
+            <UserMenu />
+            <div className='flex gap-1'>
+              <ShoppingCart className='size-10' />
               <div>
-                <p className="text-sm">Cart</p>
-                <p className="font-medium bg-slate-700 rounded-md text-center text-white ">
+                <p className='text-sm'>Cart</p>
+                <p className='rounded-md bg-teal-700 text-center font-medium text-white'>
                   43
                 </p>
               </div>
@@ -78,5 +98,5 @@ export const Navbar = () => {
         </div>
       </nav>
     </header>
-  );
-};
+  )
+}

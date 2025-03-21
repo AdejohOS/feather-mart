@@ -1,71 +1,140 @@
-"use client";
-import { ClipboardList, HeartIcon, User2Icon } from "lucide-react";
+'use client'
+
+import { ClipboardList, HeartIcon, LogOut, User, User2Icon } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
-import { DottedSeparator } from "./ui/dotted-separator";
+import { DottedSeparator } from './ui/dotted-separator'
 
-import { Button } from "./ui/button";
+import { useRouter } from 'next/navigation'
+
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+
+import { useLogout } from '@/hooks/use-logout'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 export const UserMenu = () => {
+  const { data: user } = useCurrentUser()
+
+  const router = useRouter()
+
+  const signIn = () => {
+    router.push('/sign-in')
+  }
+
+  const { mutate } = useLogout()
+
+  const signOut = () => {
+    mutate()
+    router.push('/vendor-market/auth/sign-in')
+  }
+
+  const { full_name, avatar_url, email } = user || {
+    full_name: '',
+    avatar_url: '',
+    email: ''
+  }
+
+  const avatarFallback = full_name
+    ? full_name.charAt(0).toUpperCase()
+    : (email?.charAt(0).toLocaleUpperCase() ?? 'U')
+
+  const surname = user?.full_name?.split(' ').pop()
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild className="relative outline-none">
-        <button className="flex items-center gap-1 border-none stroke-none">
-          <User2Icon className="size-10 shrink-0" />
-          <div className="text-start">
-            <p className="text-sm">Account</p>
-            <p className="font-medium text-sm">Login/Register</p>
+      <DropdownMenuTrigger asChild className='relative outline-none'>
+        <button className='flex items-center gap-1 border-none stroke-none'>
+          {user ? (
+            <Avatar className='size-10 border border-neutral-700 transition hover:opacity-75'>
+              <AvatarImage src={avatar_url || ''} />
+              <AvatarFallback className='flex items-center justify-center bg-neutral-200 font-medium text-neutral-500'>
+                {avatarFallback}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <User2Icon className='size-10 shrink-0' />
+          )}
+
+          <div className='text-start'>
+            <p className='text-sm'>
+              {user ? <span>Hi, {surname} </span> : 'Account'}
+            </p>
+            <p className='text-sm font-medium'>
+              {user ? 'Account' : 'Login/Register'}
+            </p>
           </div>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        side="bottom"
-        className="w-60"
-        sideOffset={10}
-      >
-        <div className="flex flex-col items-center justify-center gap-2 px-2.5 py-4 ">
-          <Button className="w-full">Sign In</Button>
-          <Button className="w-full" variant="ghost">
-            Register
-          </Button>
-        </div>
-        <DottedSeparator className="mb-1" />
-
-        {/*<div className="flex items-center gap-x-2 px-2.5 py-4 ">
-          <Avatar className="size-52px border border-neutral-700">
-            <AvatarFallback className="flex items-center justify-center bg-neutral-200 text-xl font-medium text-neutral-500">
-              SA
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-neutral-500 text-sm truncate">
-              Welcome back, <span className="font-medium">Sunday</span>
-            </p>
-            <p className="text-xs text-neutral-500 truncate">
-              elusivebrown@gmail.com
-            </p>
-          </div>
-    </div> */}
-
-        <DropdownMenuItem className="flex h-10 cursor-pointer items-center  font-medium">
-          <ClipboardList className="mr-2 size-4" /> My Orders
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex h-10 cursor-pointer items-center  font-medium">
-          <HeartIcon className="mr-2 size-4" /> My Wishlist
-        </DropdownMenuItem>
-        {/*<DropdownMenuItem
-          className="flex h-10 cursor-pointer items-center  font-medium text-amber-700"
-          onClick={() => {}}
+      {!user ? (
+        <DropdownMenuContent
+          align='end'
+          side='bottom'
+          className='w-60'
+          sideOffset={10}
         >
-          <GoSignOut className="mr-2 size-4" /> Logout
-        </DropdownMenuItem>*/}
-      </DropdownMenuContent>
+          <div className='flex flex-col items-center justify-center gap-2 px-2.5 py-4'>
+            <DropdownMenuItem
+              onClick={signIn}
+              className='flex h-10 w-full cursor-pointer items-center justify-center bg-teal-600 font-medium text-white hover:bg-teal-700 hover:text-white'
+            >
+              Sign In
+            </DropdownMenuItem>
+          </div>
+
+          <DottedSeparator className='mb-1' />
+
+          <DropdownMenuItem className='flex h-10 cursor-pointer items-center font-medium'>
+            <ClipboardList className='mr-2 size-4' /> My Orders
+          </DropdownMenuItem>
+          <DropdownMenuItem className='flex h-10 cursor-pointer items-center font-medium'>
+            <HeartIcon className='mr-2 size-4' /> My Wishlist
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      ) : (
+        <DropdownMenuContent
+          align='end'
+          side='bottom'
+          className='w-60'
+          sideOffset={10}
+        >
+          <div className='flex items-center gap-x-2 px-2.5 py-4'>
+            <Avatar className='size-[52px] border border-neutral-700'>
+              <AvatarImage src={user.avatar_url || ''} />
+              <AvatarFallback className='flex items-center justify-center bg-neutral-200 text-xl font-medium text-neutral-500'>
+                {avatarFallback}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className='truncate text-sm text-neutral-500'>
+                Welcome back, <span className='font-medium'>{surname}</span>
+              </p>
+              <p className='truncate text-xs text-neutral-500'>{email}</p>
+            </div>
+          </div>
+          <DottedSeparator className='mb-1' />
+          <DropdownMenuItem className='flex h-10 cursor-pointer items-center font-medium'>
+            <User className='mr-2 size-4' /> Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem className='flex h-10 cursor-pointer items-center font-medium'>
+            <User className='mr-2 size-4' />
+            Manage Account
+          </DropdownMenuItem>
+          <DropdownMenuItem className='flex h-10 cursor-pointer items-center font-medium'>
+            <User className='mr-2 size-4' /> Profile
+          </DropdownMenuItem>
+          <DottedSeparator className='my-1' />
+          <DropdownMenuItem
+            className='flex h-10 cursor-pointer items-center font-medium text-amber-700'
+            onClick={signOut}
+          >
+            <LogOut className='mr-2 size-4' /> Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      )}
     </DropdownMenu>
-  );
-};
+  )
+}
