@@ -342,6 +342,7 @@ export async function updateFarmAction(data: UpdateFarmValues, farmId: string) {
   }
   message?: string
   success?: boolean
+  productId?: string
 }
 
  export async function createProductAction(prevState: FormState, formData: FormData): Promise<FormState>{
@@ -369,7 +370,7 @@ export async function updateFarmAction(data: UpdateFarmValues, farmId: string) {
 
     const rawFormData = Object.fromEntries(formData.entries())
 
-    const formDataObject:any = {...rawFormData}
+    const formDataObject: any = {...rawFormData}
     
 
     if (formDataObject.availableDate) {
@@ -404,7 +405,7 @@ export async function updateFarmAction(data: UpdateFarmValues, farmId: string) {
   }
 
   const productData = {
-    seller_id: user.id, 
+      seller_id: user.id, 
       farm_id: validatedData.data.farmId || null, 
       name: validatedData.data.name,
       description: validatedData.data.description,
@@ -489,21 +490,44 @@ export async function updateFarmAction(data: UpdateFarmValues, farmId: string) {
  }
 
 
- export async function updateProductAction( prevState: FormState, formData: FormData, productId: string): Promise<FormState>{
+ export async function updateProductAction( prevState: FormState, formData: FormData): Promise<FormState>{
   const supabase = await createClient()
 
   try {
 
-    const {data:{user}, error:userError} = await supabase.auth.getUser()
+    const {data:{user}} = await supabase.auth.getUser()
 
-    if(!user || userError){
-      throw new Error("Authentication error")
+    if(!user){
+      return {
+        message: "You must be logged in to update a product",
+        success: false,
+      }
     }
 
-    const {data:product, error: existingError} = await supabase.from("products").select("seller_id, id").eq("seller_id", user.id).eq("id", productId).single()
-    if(!product || existingError){
-      throw new Error("No product found.")
+    const productId = formData.get("id") as string
+    
+    if (!productId){
+      return {
+        message: "Product Id is required for updates",
+        success: false
+      }
     }
+
+    const {data:product, error: fetchError} = await supabase.from("products").select("seller_id, id").eq("seller_id", user.id).eq("id", productId).single()
+    
+    if(fetchError){
+      return {
+        message: `Error fetching product: ${fetchError.message}`,
+        success: false,
+      }
+    }
+
+    if (product.seller_id !== user.id){
+      return {
+        message: "You can only update your own products",
+        success: false,
+    }
+  }
 
     const rawFormData = Object.fromEntries(formData.entries())
 
@@ -579,10 +603,40 @@ export async function updateFarmAction(data: UpdateFarmValues, farmId: string) {
     }
   }
 
-  return {
-    message: "Product updated successfully!",
-    success: true,
+  if (validatedData.data.uploadedMedia) {
+    try {
+      const uploadedMedia = JSON.parse(validatedData.data.uploadedMedia)
+
+      // Save media entries to database
+      if (uploadedMedia.length > 0) {
+        const mediaEntries = uploadedMedia.map((media: any) => ({
+          product_id: productId,
+          url: media.url,
+          type: media.type,
+        }))
+
+        const { error: mediaError } = await supabase.from("product_media").insert(mediaEntries)
+
+        if (mediaError) {
+          console.error("Error saving media entries:", mediaError)
+        }
+      }
+
+      
+    } catch (uploadError) {
+      console.error("Error handling media uploads:", uploadError)
+      // We don't fail the whole operation if media upload fails
+      // Just log the error and continue
+    }
   }
+  revalidatePath("/vendor-marketplace/products")
+    revalidatePath(`/vendor-marketplace/products/${productId}`)
+
+    return {
+      message: "Product updated successfully!",
+      success: true,
+      productId,
+    }
 
   } catch (error) {
     console.error("Error updating product:", error)

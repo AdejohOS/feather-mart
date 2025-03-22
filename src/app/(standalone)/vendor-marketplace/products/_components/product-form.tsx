@@ -54,19 +54,147 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-import { createProductAction, type FormState } from '@/features/action'
+import {
+  createProductAction,
+  updateProductAction,
+  type FormState
+} from '@/features/action'
 import { toast } from 'sonner'
 import { FarmSelector } from './farm-selector'
 import {
   CreateProductSchema,
   CreateProductValues
 } from '@/features/vendor/vendor-schema'
+import { z } from 'zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { MediaUpload } from './media-upload'
 import { useCreateProduct } from '@/hooks/use-products'
+import { UploadedMedia } from '@/types/types'
+
+const productFormSchema = z
+  .object({
+    id: z.string().optional(),
+    // Basic Information
+    name: z
+      .string()
+      .min(3, { message: 'Product name must be at least 3 characters' })
+      .max(100, { message: 'Product name cannot exceed 100 characters' }),
+
+    description: z
+      .string()
+      .min(10, { message: 'Description must be at least 10 characters' })
+      .max(2000, { message: 'Description cannot exceed 2000 characters' }),
+
+    category: z.string({
+      required_error: 'Please select a category'
+    }),
+
+    breed: z.string().optional(),
+
+    age: z.string().optional(),
+
+    weight: z.string().optional(),
+
+    // Farm association
+    farmId: z.string().uuid().optional(),
+
+    // Pricing & Inventory
+    price: z.coerce
+      .number()
+      .positive({ message: 'Price must be a positive number' })
+      .refine(val => val <= 1000000, {
+        message: 'Price cannot exceed 1,000,000'
+      }),
+
+    discountPrice: z.coerce
+      .number()
+      .nonnegative({ message: 'Discount price must be a non-negative number' })
+      .optional()
+      .refine(val => val === undefined || val <= 1000000, {
+        message: 'Discount price cannot exceed 1,000,000'
+      }),
+
+    stock: z.coerce
+      .number()
+      .int({ message: 'Stock must be a whole number' })
+      .nonnegative({ message: 'Stock must be a non-negative integer' })
+      .refine(val => val <= 1000000, {
+        message: 'Stock cannot exceed 1,000,000 units'
+      }),
+
+    unit: z.string({
+      required_error: 'Please select a unit'
+    }),
+
+    minimumOrder: z.coerce
+      .number()
+      .int({ message: 'Minimum order must be a whole number' })
+      .nonnegative({ message: 'Minimum order must be a non-negative integer' })
+      .optional()
+      .refine(val => val === undefined || val <= 10000, {
+        message: 'Minimum order cannot exceed 10,000 units'
+      }),
+
+    availableDate: z.date().optional(),
+
+    sku: z
+      .string()
+      .max(50, { message: 'SKU cannot exceed 50 characters' })
+      .optional(),
+
+    // Product Attributes
+    isOrganic: z.boolean().default(false),
+    isFreeRange: z.boolean().default(false),
+    isAntibiotic: z.boolean().default(false),
+    isHormone: z.boolean().default(false),
+    isVaccinated: z.boolean().default(false),
+    isAvailable: z.boolean().default(true),
+
+    // Tags
+    tags: z
+      .array(z.string())
+      .max(20, { message: 'Cannot add more than 20 tags' })
+      .optional(),
+
+    // Additional Information
+    nutritionalInfo: z
+      .string()
+      .max(1000, {
+        message: 'Nutritional information cannot exceed 1000 characters'
+      })
+      .optional(),
+
+    storageInstructions: z
+      .string()
+      .max(1000, {
+        message: 'Storage instructions cannot exceed 1000 characters'
+      })
+      .optional(),
+
+    origin: z
+      .string()
+      .max(100, { message: 'Origin information cannot exceed 100 characters' })
+      .optional(),
+
+    // Uploaded media
+    uploadedMedia: z.array(z.custom<UploadedMedia>()).optional(),
+
+    // Existing media (for edit mode)
+    existingMedia: z.array(z.custom<UploadedMedia>()).optional()
+  })
+  .refine(data => !data.discountPrice || data.discountPrice < data.price, {
+    message: 'Discount price must be less than regular price',
+    path: ['discountPrice']
+  })
+  .refine(data => !data.minimumOrder || data.minimumOrder <= data.stock, {
+    message: 'Minimum order cannot exceed available stock',
+    path: ['minimumOrder']
+  })
+
+type ProductFormValues = z.infer<typeof productFormSchema>
 
 // Default values for the form
-const defaultValues: Partial<CreateProductValues> = {
+const defaultValues: Partial<ProductFormValues> = {
   name: '',
   description: '',
   price: 0,
@@ -122,23 +250,15 @@ const breeds = [
 const initialState: FormState = {}
 
 interface ProductFormProps {
-  initialData?: Partial<CreateProductValues>
+  initialData?: Partial<ProductFormValues>
   farms: Array<{ id: string; name: string }>
   isEditing?: boolean
 }
 
-function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
-  return (
-    <Button type='submit' disabled={isSubmitting}>
-      {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-      {isSubmitting ? 'Saving...' : 'Save Product'}
-    </Button>
-  )
-}
-
 export function ProductForm({
   initialData,
-  isEditing = false
+  isEditing = false,
+  farms
 }: ProductFormProps) {
   const router = useRouter()
   const [selectedTags, setSelectedTags] = useState<string[]>(
@@ -147,46 +267,53 @@ export function ProductForm({
   const [openBreed, setOpenBreed] = useState(false)
   const [files, setFiles] = useState<File[]>([])
 
-  const { mutate, isPending } = useCreateProduct()
+  function SubmitButton({ pending }: { pending: boolean }) {
+    return (
+      <Button type='submit' disabled={pending}>
+        {pending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+        {pending ? 'Saving...' : 'Save Product'}
+      </Button>
+    )
+  }
 
-  const form = useForm<CreateProductValues>({
-    resolver: zodResolver(CreateProductSchema),
+  const [createState, createAction] = useActionState(createProductAction, {
+    errors: {},
+    message: '',
+    success: false,
+    productId: ''
+  })
+
+  const [updateState, updateAction] = useActionState(updateProductAction, {
+    errors: {},
+    message: '',
+    success: false,
+    productId: ''
+  })
+
+  const isPending = false
+
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: initialData
       ? { ...defaultValues, ...initialData }
       : defaultValues
   })
-
-  const queryClient = useQueryClient()
 
   // Update the form's tags field when selectedTags changes
   useEffect(() => {
     form.setValue('tags', selectedTags)
   }, [selectedTags, form])
 
-  useEffect(() => {
-    if (state?.message) {
-      if (state.success) {
-        queryClient.invalidateQueries({ queryKey: ['products'] })
-        toast.success(state.message)
-
-        form.reset(defaultValues)
-        setSelectedTags([])
-
-        setTimeout(() => {
-          router.push('/vendor-marketplace/products')
-        }, 1500)
-      } else {
-        toast.error(state.message)
-      }
-    }
-  }, [state, form, router])
-
-  async function onSubmit(data: CreateProductValues) {
+  async function onSubmit(data: ProductFormValues) {
     const formData = new FormData()
 
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined) {
         if (key === 'tags' && Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value))
+        } else if (key === 'uploadedMedia' && Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value))
+        } else if (key === 'existingMedia' && Array.isArray(value)) {
           formData.append(key, JSON.stringify(value))
         } else if (key === 'availableDate' && value instanceof Date) {
           formData.append(key, value.toISOString())
@@ -195,30 +322,27 @@ export function ProductForm({
         }
       }
 
-      files.forEach((file, index) => {
-        formData.append(`media[${index}]`, file)
-      })
-    })
+      if (isEditing && initialData?.id) {
+        formData.append('id', initialData.id)
+      }
 
-    startTransition(() => {
-      formAction(formData)
+      if (isEditing) {
+        updateAction(formData)
+      } else {
+        createAction(formData)
+      }
     })
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        {state?.errors && Object.keys(state.errors).length > 0 && (
+        {((isEditing && updateState.message && !updateState.success) ||
+          (!isEditing && createState.message && !createState.success)) && (
           <Alert variant='destructive'>
             <AlertTitle>Validation Error</AlertTitle>
             <AlertDescription>
-              <ul className='list-disc pl-5'>
-                {Object.entries(state.errors).map(([field, errors]) =>
-                  errors?.map((error, i) => (
-                    <li key={`${field}-${i}`}>{error}</li>
-                  ))
-                )}
-              </ul>
+              {isEditing ? updateState.message : createState.message}
             </AlertDescription>
           </Alert>
         )}

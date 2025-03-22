@@ -108,7 +108,6 @@ export const UpdateFarmSchema = z.object({
 
  export const CreateProductSchema = z
    .object({
-     // Basic Information
      name: z
        .string()
        .min(3, { message: 'Product name must be at least 3 characters' })
@@ -211,10 +210,9 @@ export const UpdateFarmSchema = z.object({
        .optional(),
        
        // Uploaded media
-    uploadedMedia: z.array(z.custom<UploadedMedia>()).optional(),
-
-    // Existing media (for edit mode)
-    existingMedia: z.array(z.custom<UploadedMedia>()).optional(),
+    uploadedMedia: z.string().optional(),
+    existingMedia: z.string().optional(),
+    
    })
    .refine(data => !data.discountPrice || data.discountPrice < data.price, {
      message: 'Discount price must be less than regular price',
