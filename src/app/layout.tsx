@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Figtree } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "@/components/ui/sonner";
+import { QueryClientProvider } from "@/providers/query-provider";
+import { CartProvider } from "./(dashboard)/cart/_components/cart-provider";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const figtree = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +25,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(
+          `min-h-screen text-neutral-500 antialiased`,
+          figtree.className
+        )}
       >
-        {children}
+        <NuqsAdapter>
+          <QueryClientProvider>
+            <CartProvider>{children}</CartProvider>
+          </QueryClientProvider>
+        </NuqsAdapter>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
