@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
-import { CalendarIcon, Check, ChevronsUpDown, Loader } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Resolver, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,45 +14,45 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent } from '@/components/ui/card'
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList
-} from '@/components/ui/command'
-import { Calendar } from '@/components/ui/calendar'
-import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Separator } from '@/components/ui/separator'
+  CommandList,
+} from "@/components/ui/command";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
-import { toast } from 'sonner'
-import { FarmSelector } from './farm-selector'
-import { z } from 'zod'
-import { MediaUpload } from '../../../../../components/media-upload'
+import { toast } from "sonner";
+import { FarmSelector } from "./farm-selector";
+import { z } from "zod";
+import { MediaUpload } from "../../../../../components/media-upload";
 
-import { useCreateProduct, useUpdateProduct } from '@/hooks/use-products'
-import { UploadedMedia } from '@/hooks/use-supabase-uploads'
+import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
+import { UploadedMedia } from "@/hooks/use-supabase-uploads";
 
 const productFormSchema = z
   .object({
@@ -60,16 +60,16 @@ const productFormSchema = z
     // Basic Information
     name: z
       .string()
-      .min(3, { message: 'Product name must be at least 3 characters' })
-      .max(100, { message: 'Product name cannot exceed 100 characters' }),
+      .min(3, { message: "Product name must be at least 3 characters" })
+      .max(100, { message: "Product name cannot exceed 100 characters" }),
 
     description: z
       .string()
-      .min(10, { message: 'Description must be at least 10 characters' })
-      .max(2000, { message: 'Description cannot exceed 2000 characters' }),
+      .min(10, { message: "Description must be at least 10 characters" })
+      .max(2000, { message: "Description cannot exceed 2000 characters" }),
 
     category: z.string({
-      required_error: 'Please select a category'
+      required_error: "Please select a category",
     }),
 
     breed: z.string().optional(),
@@ -84,45 +84,45 @@ const productFormSchema = z
     // Pricing & Inventory
     price: z.coerce
       .number()
-      .positive({ message: 'Price must be a positive number' })
-      .refine(val => val <= 1000000, {
-        message: 'Price cannot exceed 1,000,000'
+      .positive({ message: "Price must be a positive number" })
+      .refine((val) => val <= 1000000, {
+        message: "Price cannot exceed 1,000,000",
       }),
 
     discountPrice: z.coerce
       .number()
-      .nonnegative({ message: 'Discount price must be a non-negative number' })
+      .nonnegative({ message: "Discount price must be a non-negative number" })
       .optional()
-      .refine(val => val === undefined || val <= 1000000, {
-        message: 'Discount price cannot exceed 1,000,000'
+      .refine((val) => val === undefined || val <= 1000000, {
+        message: "Discount price cannot exceed 1,000,000",
       }),
 
     stock: z.coerce
       .number()
-      .int({ message: 'Stock must be a whole number' })
-      .nonnegative({ message: 'Stock must be a non-negative integer' })
-      .refine(val => val <= 1000000, {
-        message: 'Stock cannot exceed 1,000,000 units'
+      .int({ message: "Stock must be a whole number" })
+      .nonnegative({ message: "Stock must be a non-negative integer" })
+      .refine((val) => val <= 1000000, {
+        message: "Stock cannot exceed 1,000,000 units",
       }),
 
     unit: z.string({
-      required_error: 'Please select a unit'
+      required_error: "Please select a unit",
     }),
 
     minimumOrder: z.coerce
       .number()
-      .int({ message: 'Minimum order must be a whole number' })
-      .nonnegative({ message: 'Minimum order must be a non-negative integer' })
+      .int({ message: "Minimum order must be a whole number" })
+      .nonnegative({ message: "Minimum order must be a non-negative integer" })
       .optional()
-      .refine(val => val === undefined || val <= 10000, {
-        message: 'Minimum order cannot exceed 10,000 units'
+      .refine((val) => val === undefined || val <= 10000, {
+        message: "Minimum order cannot exceed 10,000 units",
       }),
 
     availableDate: z.date().optional(),
 
     sku: z
       .string()
-      .max(50, { message: 'SKU cannot exceed 50 characters' })
+      .max(50, { message: "SKU cannot exceed 50 characters" })
       .optional(),
 
     // Product Attributes
@@ -136,50 +136,50 @@ const productFormSchema = z
     // Tags
     tags: z
       .array(z.string())
-      .max(20, { message: 'Cannot add more than 20 tags' })
+      .max(20, { message: "Cannot add more than 20 tags" })
       .optional(),
 
     // Additional Information
     nutritionalInfo: z
       .string()
       .max(1000, {
-        message: 'Nutritional information cannot exceed 1000 characters'
+        message: "Nutritional information cannot exceed 1000 characters",
       })
       .optional(),
 
     storageInstructions: z
       .string()
       .max(1000, {
-        message: 'Storage instructions cannot exceed 1000 characters'
+        message: "Storage instructions cannot exceed 1000 characters",
       })
       .optional(),
 
     origin: z
       .string()
-      .max(100, { message: 'Origin information cannot exceed 100 characters' })
+      .max(100, { message: "Origin information cannot exceed 100 characters" })
       .optional(),
 
     // Uploaded media
     uploadedMedia: z.array(z.custom<UploadedMedia>()).optional(),
 
     // Existing media (for edit mode)
-    existingMedia: z.array(z.custom<UploadedMedia>()).optional()
+    existingMedia: z.array(z.custom<UploadedMedia>()).optional(),
   })
-  .refine(data => !data.discountPrice || data.discountPrice < data.price, {
-    message: 'Discount price must be less than regular price',
-    path: ['discountPrice']
+  .refine((data) => !data.discountPrice || data.discountPrice < data.price, {
+    message: "Discount price must be less than regular price",
+    path: ["discountPrice"],
   })
-  .refine(data => !data.minimumOrder || data.minimumOrder <= data.stock, {
-    message: 'Minimum order cannot exceed available stock',
-    path: ['minimumOrder']
-  })
+  .refine((data) => !data.minimumOrder || data.minimumOrder <= data.stock, {
+    message: "Minimum order cannot exceed available stock",
+    path: ["minimumOrder"],
+  });
 
-type ProductFormValues = z.infer<typeof productFormSchema>
+type ProductFormValues = z.infer<typeof productFormSchema>;
 
 // Default values for the form
 const defaultValues: Partial<ProductFormValues> = {
-  name: '',
-  description: '',
+  name: "",
+  description: "",
   price: 0,
   stock: 0,
   isOrganic: false,
@@ -189,79 +189,79 @@ const defaultValues: Partial<ProductFormValues> = {
   isVaccinated: false,
   isAvailable: true,
   tags: [],
-  age: '',
-  weight: '',
+  age: "",
+  weight: "",
   discountPrice: 0,
   minimumOrder: 0,
-  sku: '',
+  sku: "",
   uploadedMedia: [],
-  existingMedia: []
-}
+  existingMedia: [],
+};
 
 const categories = [
-  { label: 'Live Poultry', value: 'live-poultry' },
-  { label: 'Eggs', value: 'eggs' },
-  { label: 'Meat', value: 'meat' },
-  { label: 'Feed & Supplements', value: 'feed-supplements' },
-  { label: 'Equipment', value: 'equipment' }
-]
+  { label: "Live Poultry", value: "live-poultry" },
+  { label: "Eggs", value: "eggs" },
+  { label: "Meat", value: "meat" },
+  { label: "Feed & Supplements", value: "feed-supplements" },
+  { label: "Equipment", value: "equipment" },
+];
 
 const units = [
-  { label: 'Per Bird', value: 'bird' },
-  { label: 'Dozen', value: 'dozen' },
-  { label: 'Kg', value: 'kg' },
-  { label: 'Gram', value: 'gram' },
-  { label: 'Pound', value: 'pound' },
-  { label: 'Box', value: 'box' },
-  { label: 'Tray', value: 'tray' }
-]
+  { label: "Per Bird", value: "bird" },
+  { label: "Dozen", value: "dozen" },
+  { label: "Kg", value: "kg" },
+  { label: "Gram", value: "gram" },
+  { label: "Pound", value: "pound" },
+  { label: "Box", value: "box" },
+  { label: "Tray", value: "tray" },
+];
 
 const breeds = [
-  { label: 'Broiler', value: 'broiler' },
-  { label: 'Layer', value: 'layer' },
-  { label: 'Free Range', value: 'free-range' },
-  { label: 'Organic', value: 'organic' },
-  { label: 'Rhode Island Red', value: 'rhode-island-red' },
-  { label: 'Plymouth Rock', value: 'plymouth-rock' },
-  { label: 'Leghorn', value: 'leghorn' },
-  { label: 'Sussex', value: 'sussex' },
-  { label: 'Orpington', value: 'orpington' },
-  { label: 'Wyandotte', value: 'wyandotte' },
-  { label: 'Other', value: 'other' }
-]
+  { label: "Broiler", value: "broiler" },
+  { label: "Layer", value: "layer" },
+  { label: "Free Range", value: "free-range" },
+  { label: "Organic", value: "organic" },
+  { label: "Rhode Island Red", value: "rhode-island-red" },
+  { label: "Plymouth Rock", value: "plymouth-rock" },
+  { label: "Leghorn", value: "leghorn" },
+  { label: "Sussex", value: "sussex" },
+  { label: "Orpington", value: "orpington" },
+  { label: "Wyandotte", value: "wyandotte" },
+  { label: "Other", value: "other" },
+];
 
 interface ProductFormProps {
-  initialData?: Partial<ProductFormValues>
-  isEditing?: boolean
+  initialData?: Partial<ProductFormValues>;
+  isEditing?: boolean;
 }
 
 export function ProductForm({ initialData, isEditing }: ProductFormProps) {
-  const router = useRouter()
+  const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>(
     initialData?.tags || []
-  )
-  const [openBreed, setOpenBreed] = useState(false)
-  const [files, setFiles] = useState<File[]>([])
-  const [allMedia, setAllMedia] = useState<UploadedMedia[]>([])
+  );
+  const [openBreed, setOpenBreed] = useState(false);
+
+  const [allMedia, setAllMedia] = useState<UploadedMedia[]>([]);
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as Resolver<ProductFormValues>,
     defaultValues: {
       ...defaultValues,
       ...initialData,
       availableDate: initialData?.availableDate
         ? new Date(initialData.availableDate)
         : undefined,
-      tags: initialData?.tags || []
-    }
-  })
+      tags: initialData?.tags || [],
+    },
+  });
 
   useEffect(() => {
-    form.setValue('tags', selectedTags)
-  }, [selectedTags, form])
+    form.setValue("tags", selectedTags);
+  }, [selectedTags, form]);
 
-  const createProduct = useCreateProduct()
-  const updateProduct = useUpdateProduct()
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
 
   useEffect(() => {
     if (initialData) {
@@ -270,126 +270,126 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
         ...initialData,
         availableDate: initialData?.availableDate
           ? new Date(initialData.availableDate)
-          : undefined
-      })
-      setSelectedTags(initialData.tags || [])
+          : undefined,
+      });
+      setSelectedTags(initialData.tags || []);
     }
-  }, [initialData, form])
+  }, [initialData, form]);
 
   // Initialize allMedia with existing media when component mounts
   useEffect(() => {
     if (initialData?.existingMedia && initialData.existingMedia.length > 0) {
       console.log(
-        'Initializing with existing media:',
+        "Initializing with existing media:",
         initialData.existingMedia
-      )
+      );
 
       // Set the initial media state
-      setAllMedia(initialData.existingMedia)
+      setAllMedia(initialData.existingMedia);
 
       // Make sure form values are properly set
-      form.setValue('existingMedia', initialData.existingMedia, {
+      form.setValue("existingMedia", initialData.existingMedia, {
         shouldDirty: false, // Don't mark as dirty since this is initial data
         shouldTouch: false, // Don't mark as touched
-        shouldValidate: false // Don't trigger validation
-      })
+        shouldValidate: false, // Don't trigger validation
+      });
     }
-  }, [initialData?.existingMedia, form])
+  }, [initialData?.existingMedia, form]);
 
   // Handle media updates from the MediaUpload component
   const handleMediaUpdate = (media: UploadedMedia[]) => {
-    console.log('Media update received:', media)
+    console.log("Media update received:", media);
 
     // Update local state
-    setAllMedia(media)
+    setAllMedia(media);
 
     // Separate existing media from new uploads
-    const existingMediaItems = media.filter(item => item.id)
-    const newUploads = media.filter(item => !item.id)
+    const existingMediaItems = media.filter((item) => item.id);
+    const newUploads = media.filter((item) => !item.id);
 
-    console.log('Existing media items:', existingMediaItems)
-    console.log('New uploads:', newUploads)
+    console.log("Existing media items:", existingMediaItems);
+    console.log("New uploads:", newUploads);
 
     // Update form values
-    form.setValue('existingMedia', existingMediaItems, {
+    form.setValue("existingMedia", existingMediaItems, {
       shouldDirty: true,
       shouldTouch: true,
-      shouldValidate: false
-    })
+      shouldValidate: false,
+    });
 
-    form.setValue('uploadedMedia', newUploads, {
+    form.setValue("uploadedMedia", newUploads, {
       shouldDirty: true,
       shouldTouch: true,
-      shouldValidate: false
-    })
+      shouldValidate: false,
+    });
 
     // Force a form state update to ensure the UI reflects the changes
-    form.trigger()
-  }
+    form.trigger();
+  };
 
   async function onSubmit(data: ProductFormValues) {
     try {
-      const formData = new FormData()
+      const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined) {
-          if (key === 'tags' && Array.isArray(value)) {
-            formData.append(key, JSON.stringify(value))
-          } else if (key === 'uploadedMedia' && Array.isArray(value)) {
+          if (key === "tags" && Array.isArray(value)) {
+            formData.append(key, JSON.stringify(value));
+          } else if (key === "uploadedMedia" && Array.isArray(value)) {
             // Convert the uploadedMedia array to a JSON string
-            formData.append(key, JSON.stringify(value))
-          } else if (key === 'existingMedia' && Array.isArray(value)) {
+            formData.append(key, JSON.stringify(value));
+          } else if (key === "existingMedia" && Array.isArray(value)) {
             // Also handle existingMedia
-            formData.append(key, JSON.stringify(value))
-          } else if (key === 'availableDate' && value instanceof Date) {
-            formData.append(key, value.toISOString())
+            formData.append(key, JSON.stringify(value));
+          } else if (key === "availableDate" && value instanceof Date) {
+            formData.append(key, value.toISOString());
           } else {
-            formData.append(key, String(value))
+            formData.append(key, String(value));
           }
         }
-      })
+      });
 
       if (isEditing && initialData?.id) {
-        formData.append('id', initialData.id)
+        formData.append("id", initialData.id);
       }
 
       if (isEditing) {
-        const result = await updateProduct.mutateAsync(formData)
-        router.push(`/vendor-marketplace/products/${result.productId}`)
+        const result = await updateProduct.mutateAsync(formData);
+        router.push(`/vendor-marketplace/products/${result.productId}`);
       } else {
-        const result = await createProduct.mutateAsync(formData)
-        router.push(`/vendor-marketplace/products`)
+        await createProduct.mutateAsync(formData);
+        router.push(`/vendor-marketplace/products`);
       }
     } catch (error: any) {
-      toast.error(error.message || 'Something went wrong')
+      toast.error(error.message || "Something went wrong");
     }
   }
 
-  const isPending = createProduct.isPending || updateProduct.isPending
+  const isPending = createProduct.isPending || updateProduct.isPending;
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <Tabs defaultValue='basic' className='w-full'>
-          <TabsList className='mb-6 grid grid-cols-4'>
-            <TabsTrigger value='basic'>Basic Info</TabsTrigger>
-            <TabsTrigger value='pricing'>Pricing & Inventory</TabsTrigger>
-            <TabsTrigger value='attributes'>Attributes</TabsTrigger>
-            <TabsTrigger value='additional'>Additional Info</TabsTrigger>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="mb-6 grid grid-cols-4">
+            <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="pricing">Pricing & Inventory</TabsTrigger>
+            <TabsTrigger value="attributes">Attributes</TabsTrigger>
+            <TabsTrigger value="additional">Additional Info</TabsTrigger>
           </TabsList>
 
-          <TabsContent value='basic' className='space-y-6'>
+          <TabsContent value="basic" className="space-y-6">
             <Card>
-              <CardContent className='pt-6'>
-                <div className='grid gap-6 md:grid-cols-2'>
+              <CardContent className="pt-6">
+                <div className="grid gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name='name'
+                    name="name"
                     render={({ field }) => (
-                      <FormItem className='md:col-span-2'>
+                      <FormItem className="md:col-span-2">
                         <FormLabel>Product Name</FormLabel>
                         <FormControl>
-                          <Input placeholder='Enter product name' {...field} />
+                          <Input placeholder="Enter product name" {...field} />
                         </FormControl>
                         <FormDescription>
                           The name of your poultry product as it will appear in
@@ -402,14 +402,14 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='description'
+                    name="description"
                     render={({ field }) => (
-                      <FormItem className='md:col-span-2'>
+                      <FormItem className="md:col-span-2">
                         <FormLabel>Description</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder='Describe your product in detail'
-                            className='min-h-[120px]'
+                            placeholder="Describe your product in detail"
+                            className="min-h-[120px]"
                             {...field}
                           />
                         </FormControl>
@@ -424,7 +424,7 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='category'
+                    name="category"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Category</FormLabel>
@@ -434,11 +434,11 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder='Select a category' />
+                              <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {categories.map(category => (
+                            {categories.map((category) => (
                               <SelectItem
                                 key={category.value}
                                 value={category.value}
@@ -460,49 +460,49 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='breed'
+                    name="breed"
                     render={({ field }) => (
-                      <FormItem className='flex flex-col'>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Breed</FormLabel>
                         <Popover open={openBreed} onOpenChange={setOpenBreed}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant='outline'
-                                role='combobox'
+                                variant="outline"
+                                role="combobox"
                                 aria-expanded={openBreed}
-                                className='w-full justify-between'
+                                className="w-full justify-between"
                               >
                                 {field.value
                                   ? breeds.find(
-                                      breed => breed.value === field.value
+                                      (breed) => breed.value === field.value
                                     )?.label
-                                  : 'Select breed'}
-                                <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                                  : "Select breed"}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className='w-full p-0'>
+                          <PopoverContent className="w-full p-0">
                             <Command>
-                              <CommandInput placeholder='Search breed...' />
+                              <CommandInput placeholder="Search breed..." />
                               <CommandList>
                                 <CommandEmpty>No breed found.</CommandEmpty>
                                 <CommandGroup>
-                                  {breeds.map(breed => (
+                                  {breeds.map((breed) => (
                                     <CommandItem
                                       key={breed.value}
                                       value={breed.value}
-                                      onSelect={value => {
-                                        form.setValue('breed', value)
-                                        setOpenBreed(false)
+                                      onSelect={(value) => {
+                                        form.setValue("breed", value);
+                                        setOpenBreed(false);
                                       }}
                                     >
                                       <Check
                                         className={cn(
-                                          'mr-2 h-4 w-4',
+                                          "mr-2 h-4 w-4",
                                           field.value === breed.value
-                                            ? 'opacity-100'
-                                            : 'opacity-0'
+                                            ? "opacity-100"
+                                            : "opacity-0"
                                         )}
                                       />
                                       {breed.label}
@@ -521,15 +521,15 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                     )}
                   />
 
-                  <div className='grid grid-cols-2 gap-4 md:col-span-2'>
+                  <div className="grid grid-cols-2 gap-4 md:col-span-2">
                     <FormField
                       control={form.control}
-                      name='age'
+                      name="age"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Age</FormLabel>
                           <FormControl>
-                            <Input placeholder='e.g., 6 weeks' {...field} />
+                            <Input placeholder="e.g., 6 weeks" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -538,12 +538,12 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                     <FormField
                       control={form.control}
-                      name='weight'
+                      name="weight"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Weight</FormLabel>
                           <FormControl>
-                            <Input placeholder='e.g., 2.5 kg' {...field} />
+                            <Input placeholder="e.g., 2.5 kg" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -551,13 +551,13 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                     />
                   </div>
 
-                  <div className='md:col-span-2'>
+                  <div className="md:col-span-2">
                     <MediaUpload
                       form={form}
                       maxFiles={5}
                       existingMedia={allMedia}
                       entityId={initialData?.id}
-                      mediaType='product'
+                      mediaType="product"
                       onMediaUpdate={handleMediaUpdate}
                     />
                   </div>
@@ -566,25 +566,25 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value='pricing' className='space-y-6'>
+          <TabsContent value="pricing" className="space-y-6">
             <Card>
-              <CardContent className='pt-6'>
-                <div className='grid gap-6 md:grid-cols-2'>
+              <CardContent className="pt-6">
+                <div className="grid gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name='price'
+                    name="price"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Price</FormLabel>
                         <FormControl>
-                          <div className='relative'>
-                            <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground'>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                               $
                             </span>
                             <Input
-                              type='number'
-                              step='0.01'
-                              className='pl-7'
+                              type="number"
+                              step="0.01"
+                              className="pl-7"
                               {...field}
                             />
                           </div>
@@ -599,19 +599,19 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='discountPrice'
+                    name="discountPrice"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Discount Price (Optional)</FormLabel>
                         <FormControl>
-                          <div className='relative'>
-                            <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground'>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                               $
                             </span>
                             <Input
-                              type='number'
-                              step='0.01'
-                              className='pl-7'
+                              type="number"
+                              step="0.01"
+                              className="pl-7"
                               {...field}
                             />
                           </div>
@@ -626,7 +626,7 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='unit'
+                    name="unit"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Unit</FormLabel>
@@ -636,11 +636,11 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder='Select a unit' />
+                              <SelectValue placeholder="Select a unit" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {units.map(unit => (
+                            {units.map((unit) => (
                               <SelectItem key={unit.value} value={unit.value}>
                                 {unit.label}
                               </SelectItem>
@@ -657,12 +657,12 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='stock'
+                    name="stock"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Stock Quantity</FormLabel>
                         <FormControl>
-                          <Input type='number' {...field} />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormDescription>
                           Number of units available for sale.
@@ -674,12 +674,12 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='minimumOrder'
+                    name="minimumOrder"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Minimum Order (Optional)</FormLabel>
                         <FormControl>
-                          <Input type='number' {...field} />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormDescription>
                           Minimum quantity per order.
@@ -691,32 +691,32 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='availableDate'
+                    name="availableDate"
                     render={({ field }) => (
-                      <FormItem className='flex flex-col'>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Available Date (Optional)</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 className={cn(
-                                  'w-full pl-3 text-left font-normal',
-                                  !field.value && 'text-muted-foreground'
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, 'PPP')
+                                  format(field.value, "PPP")
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
-                                <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className='w-auto p-0' align='start'>
+                          <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
-                              mode='single'
+                              mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
                               initialFocus
@@ -733,12 +733,12 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='sku'
+                    name="sku"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>SKU (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder='Enter SKU' {...field} />
+                          <Input placeholder="Enter SKU" {...field} />
                         </FormControl>
                         <FormDescription>
                           Stock Keeping Unit for inventory tracking.
@@ -750,16 +750,16 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='isAvailable'
+                    name="isAvailable"
                     render={({ field }) => (
-                      <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2'>
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
-                        <div className='space-y-1 leading-none'>
+                        <div className="space-y-1 leading-none">
                           <FormLabel>Available for Sale</FormLabel>
                           <FormDescription>
                             Uncheck this if the product is out of stock or not
@@ -774,31 +774,31 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value='attributes' className='space-y-6'>
+          <TabsContent value="attributes" className="space-y-6">
             <Card>
-              <CardContent className='pt-6'>
-                <div className='space-y-6'>
+              <CardContent className="pt-6">
+                <div className="space-y-6">
                   <div>
-                    <h3 className='text-lg font-medium'>Product Attributes</h3>
-                    <p className='mb-4 text-sm text-muted-foreground'>
+                    <h3 className="text-lg font-medium">Product Attributes</h3>
+                    <p className="mb-4 text-sm text-muted-foreground">
                       Select all attributes that apply to your poultry product.
                     </p>
-                    <Separator className='my-4' />
+                    <Separator className="my-4" />
                   </div>
 
-                  <div className='grid gap-4 md:grid-cols-2'>
+                  <div className="grid gap-4 md:grid-cols-2">
                     <FormField
                       control={form.control}
-                      name='isOrganic'
+                      name="isOrganic"
                       render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className='space-y-1 leading-none'>
+                          <div className="space-y-1 leading-none">
                             <FormLabel>Organic</FormLabel>
                             <FormDescription>
                               Raised without synthetic pesticides or
@@ -811,16 +811,16 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                     <FormField
                       control={form.control}
-                      name='isFreeRange'
+                      name="isFreeRange"
                       render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className='space-y-1 leading-none'>
+                          <div className="space-y-1 leading-none">
                             <FormLabel>Free Range</FormLabel>
                             <FormDescription>
                               Birds have access to outdoor areas.
@@ -832,16 +832,16 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                     <FormField
                       control={form.control}
-                      name='isAntibiotic'
+                      name="isAntibiotic"
                       render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className='space-y-1 leading-none'>
+                          <div className="space-y-1 leading-none">
                             <FormLabel>Antibiotic-Free</FormLabel>
                             <FormDescription>
                               Raised without antibiotics.
@@ -853,16 +853,16 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                     <FormField
                       control={form.control}
-                      name='isHormone'
+                      name="isHormone"
                       render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className='space-y-1 leading-none'>
+                          <div className="space-y-1 leading-none">
                             <FormLabel>Hormone-Free</FormLabel>
                             <FormDescription>
                               Raised without added hormones.
@@ -874,16 +874,16 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                     <FormField
                       control={form.control}
-                      name='isVaccinated'
+                      name="isVaccinated"
                       render={({ field }) => (
-                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className='space-y-1 leading-none'>
+                          <div className="space-y-1 leading-none">
                             <FormLabel>Vaccinated</FormLabel>
                             <FormDescription>
                               Birds have received standard vaccinations.
@@ -894,62 +894,64 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                     />
                   </div>
 
-                  <div className='mt-6'>
+                  <div className="mt-6">
                     <FormLabel>Product Tags</FormLabel>
-                    <div className='mt-2 flex flex-wrap gap-2'>
-                      {selectedTags.map(tag => (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedTags.map((tag) => (
                         <div
                           key={tag}
-                          className='flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm text-secondary-foreground'
+                          className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm text-secondary-foreground"
                         >
                           {tag}
                           <button
-                            type='button'
+                            type="button"
                             onClick={() =>
                               setSelectedTags(
-                                selectedTags.filter(t => t !== tag)
+                                selectedTags.filter((t) => t !== tag)
                               )
                             }
-                            className='text-secondary-foreground/70 hover:text-secondary-foreground'
+                            className="text-secondary-foreground/70 hover:text-secondary-foreground"
                           >
                             ×
                           </button>
                         </div>
                       ))}
                       <Input
-                        placeholder='Add tag and press Enter'
-                        className='w-full min-w-[200px] flex-1 md:w-auto'
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' && e.currentTarget.value) {
-                            e.preventDefault()
+                        placeholder="Add tag and press Enter"
+                        className="w-full min-w-[200px] flex-1 md:w-auto"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && e.currentTarget.value) {
+                            e.preventDefault();
                             if (!selectedTags.includes(e.currentTarget.value)) {
                               const newTags = [
                                 ...selectedTags,
-                                e.currentTarget.value
-                              ]
+                                e.currentTarget.value,
+                              ];
                               if (newTags.length <= 20) {
-                                setSelectedTags(newTags)
-                                form.setValue('tags', newTags)
+                                setSelectedTags(newTags);
+                                form.setValue("tags", newTags);
                               } else {
-                                toast.error('You cannot add more than 20 tags.')
+                                toast.error(
+                                  "You cannot add more than 20 tags."
+                                );
                               }
-                              e.currentTarget.value = ''
+                              e.currentTarget.value = "";
                             }
                           }
                         }}
                       />
                     </div>
-                    <p className='mt-2 text-sm text-muted-foreground'>
+                    <p className="mt-2 text-sm text-muted-foreground">
                       Add relevant tags to help buyers find your product (max 20
                       tags).
                     </p>
                     <FormField
                       control={form.control}
-                      name='tags'
+                      name="tags"
                       render={() => (
-                        <FormItem className='hidden'>
+                        <FormItem className="hidden">
                           <FormControl>
-                            <Input type='hidden' />
+                            <Input type="hidden" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -961,13 +963,13 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value='additional' className='space-y-6'>
+          <TabsContent value="additional" className="space-y-6">
             <Card>
-              <CardContent className='pt-6'>
-                <div className='grid gap-6'>
+              <CardContent className="pt-6">
+                <div className="grid gap-6">
                   <FormField
                     control={form.control}
-                    name='nutritionalInfo'
+                    name="nutritionalInfo"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
@@ -975,9 +977,9 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder='Enter nutritional information'
-                            className='min-h-[100px]'
-                            value={field.value || ''}
+                            placeholder="Enter nutritional information"
+                            className="min-h-[100px]"
+                            value={field.value || ""}
                             onChange={field.onChange}
                           />
                         </FormControl>
@@ -991,15 +993,15 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='storageInstructions'
+                    name="storageInstructions"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Storage Instructions (Optional)</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder='How should this product be stored?'
-                            className='min-h-[100px]'
-                            value={field.value || ''}
+                            placeholder="How should this product be stored?"
+                            className="min-h-[100px]"
+                            value={field.value || ""}
                             onChange={field.onChange}
                           />
                         </FormControl>
@@ -1013,13 +1015,13 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
 
                   <FormField
                     control={form.control}
-                    name='origin'
+                    name="origin"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Origin (Optional)</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Where was this product sourced from?'
+                            placeholder="Where was this product sourced from?"
                             {...field}
                           />
                         </FormControl>
@@ -1036,30 +1038,30 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
           </TabsContent>
         </Tabs>
 
-        <div className='flex justify-end gap-4'>
+        <div className="flex justify-end gap-4">
           <Button
-            type='button'
-            variant='outline'
+            type="button"
+            variant="outline"
             onClick={() =>
               isEditing && initialData?.id
                 ? router.push(`/vendor-marketplace/products/${initialData.id}`)
-                : router.push('/vendor-marketplace/products')
+                : router.push("/vendor-marketplace/products")
             }
           >
             Cancel
           </Button>
-          <Button type='submit' disabled={isPending}>
+          <Button type="submit" disabled={isPending}>
             {isPending ? (
-              <span className='flex items-center gap-2'>
-                <Loader className='size-4 animate-spin' />
-                {isEditing ? 'Updating...' : 'Creating...'}
+              <span className="flex items-center gap-2">
+                <Loader className="size-4 animate-spin" />
+                {isEditing ? "Updating..." : "Creating..."}
               </span>
             ) : (
-              `${isEditing ? 'Update' : 'Create'} Product`
+              `${isEditing ? "Update" : "Create"} Product`
             )}
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

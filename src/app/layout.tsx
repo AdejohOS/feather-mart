@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Figtree } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClientProvider } from "@/providers/query-provider";
-import { CartProvider } from "./(dashboard)/cart/_components/cart-provider";
 
 const figtree = Figtree({ subsets: ["latin"] });
 
@@ -31,9 +28,7 @@ export default function RootLayout({
         )}
       >
         <NuqsAdapter>
-          <QueryClientProvider>
-            <CartProvider>{children}</CartProvider>
-          </QueryClientProvider>
+          <QueryClientProvider>{children}</QueryClientProvider>
         </NuqsAdapter>
         <Toaster position="top-right" />
       </body>

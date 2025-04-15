@@ -1,38 +1,35 @@
-'use client'
+"use client";
 
-import { useGetProduct } from '@/hooks/use-products'
-import { ProductForm } from './product-form'
-import { notFound } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { Loader } from 'lucide-react'
+import { useGetProduct } from "@/hooks/use-products";
+import { ProductForm } from "./product-form";
+import { notFound } from "next/navigation";
+import { useState } from "react";
+import { Loader } from "lucide-react";
 
 interface FormWrapperProps {
-  productId: string
+  productId: string;
 }
 
 export const FormWrapper = ({ productId }: FormWrapperProps) => {
-  const [farms, setFarms] = useState<Array<{ id: string; name: string }>>([])
-  const [isLoadingFarms, setIsLoadingFarms] = useState(true)
-
   const {
     data: product,
     error: productError,
-    isLoading
-  } = useGetProduct(productId)
+    isLoading,
+  } = useGetProduct(productId);
   if (productError) {
-    return notFound()
+    return notFound();
   }
 
   if (isLoading) {
     return (
-      <div className='flex items-center gap-2'>
+      <div className="flex items-center gap-2">
         Loading...
-        <Loader className='size-4 animate-spin' />
+        <Loader className="size-4 animate-spin" />
       </div>
-    )
+    );
   }
   if (!product) {
-    return <div>Product not found</div>
+    return <div>Product not found</div>;
   }
   const productData = {
     id: product.id,
@@ -64,20 +61,20 @@ export const FormWrapper = ({ productId }: FormWrapperProps) => {
     origin: product.origin || undefined,
     // Transform media data
     existingMedia:
-      product.media?.map(item => ({
+      product.media?.map((item) => ({
         id: item.id,
         url: item.url,
         type:
-          item.type === 'image' || item.type === 'video'
-            ? (item.type as 'image' | 'video')
-            : 'image',
+          item.type === "image" || item.type === "video"
+            ? (item.type as "image" | "video")
+            : "image",
         size: 0, // Size is not stored in the database
-        name: item.url.split('/').pop() || 'file'
-      })) || []
-  }
+        name: item.url.split("/").pop() || "file",
+      })) || [],
+  };
   return (
     <div>
       <ProductForm initialData={productData} isEditing={true} />
     </div>
-  )
-}
+  );
+};

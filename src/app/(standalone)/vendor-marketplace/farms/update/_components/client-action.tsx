@@ -1,6 +1,5 @@
 "use client";
 
-import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 
 import { useConfirm } from "@/hooks/use-confirm";
@@ -45,6 +44,7 @@ export const ClientAction = ({ farmId }: ClientActionProps) => {
           toast.error(result.message);
         }
       } catch (error) {
+        console.log(error);
         toast.error("An unexpected error occured.");
       }
     });
