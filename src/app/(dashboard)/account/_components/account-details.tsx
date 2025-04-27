@@ -34,7 +34,6 @@ interface AccountDetailsProps {
 
 export const AccountDetails = ({
   user,
-  profile,
   isOAuthUser,
   authProvider,
 }: AccountDetailsProps) => {

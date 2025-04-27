@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { CheckoutSummary } from "./checkout-summary";
 import { createOrder } from "../../orders/action";
+import { Cart } from "@/types/types";
 
 // Define the form schema with Zod
 const shippingSchema = z.object({
@@ -42,10 +43,7 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 interface CheckoutFormProps {
-  cart: {
-    items: any[];
-    total: number;
-  };
+  cart: Cart;
   userId: string;
 }
 
@@ -60,7 +58,6 @@ export const CheckoutForm = ({ cart, userId }: CheckoutFormProps) => {
     handleSubmit,
     formState: { errors, isValid },
     trigger,
-    getValues,
     watch,
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -84,9 +81,6 @@ export const CheckoutForm = ({ cart, userId }: CheckoutFormProps) => {
       },
     },
   });
-
-  // Watch all form values
-  const formValues = watch();
 
   const handleTabChange = async (value: string) => {
     if (value === "payment" && activeTab === "shipping") {
@@ -127,8 +121,14 @@ export const CheckoutForm = ({ cart, userId }: CheckoutFormProps) => {
       } else {
         throw new Error("Failed to place order");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to place order. Please try again.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(
+          error.message || "Failed to place order. Please try again."
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

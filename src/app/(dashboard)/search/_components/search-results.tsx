@@ -6,11 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ProductCard } from "./product-card";
 import { FarmCard } from "./farm-card";
+import { Farm, Product } from "@/types/types";
 
 interface SearchResultsProps {
   results: {
-    products: any[];
-    farms: any[];
+    products: Product[];
+    farms: Farm[];
     totalProducts: number;
     totalFarms: number;
     page: number;

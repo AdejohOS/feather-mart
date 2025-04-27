@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { Cart } from "@/types/types";
 
 interface CheckoutSummaryProps {
-  cart: {
-    items: any[];
-    total: number;
-  };
+  cart: Cart;
 }
 export const CheckoutSummary = ({ cart }: CheckoutSummaryProps) => {
   // Calculate subtotal, tax, and shipping

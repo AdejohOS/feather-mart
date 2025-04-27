@@ -3,11 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/ui/dotted-separator";
+import { OrderType } from "@/types/types";
 
 import { format } from "date-fns";
 
 interface OrderDetailsProps {
-  order: any;
+  order: OrderType;
 }
 
 export const OrderDetails = ({ order }: OrderDetailsProps) => {
@@ -17,7 +18,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
 
   // Calculate order totals
   const subtotal = order.order_items.reduce(
-    (sum: number, item: any) => sum + item.product_price * item.quantity,
+    (sum: number, item) => sum + item.product_price * item.quantity,
     0
   );
   const shipping = 0; // Free shipping

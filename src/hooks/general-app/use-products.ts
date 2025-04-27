@@ -2,10 +2,17 @@ import { Product } from "@/types/types";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
+type ProductWithFarm = Product & {
+  farm: {
+    id: string;
+    name: string;
+  } | null;
+};
+
 export function useGetProducts() {
-  return useQuery<Product[]>({
+  return useQuery<ProductWithFarm[]>({
     queryKey: ["products"],
-    queryFn: async (): Promise<Product[]> => {
+    queryFn: async (): Promise<ProductWithFarm[]> => {
       const supabase = await createClient();
 
       const { data: products, error: productsError } = await supabase

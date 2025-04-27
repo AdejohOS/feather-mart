@@ -3,6 +3,7 @@ import { Database } from "../../types_db";
 export type FarmTypes = Database["public"]["Tables"]["farms"]["Row"];
 
 export type Product = Database["public"]["Tables"]["products"]["Row"];
+export type Farm = Database["public"]["Tables"]["farms"]["Row"];
 
 export type Order = Database["public"]["Tables"]["orders"]["Row"];
 export type OrderItems = Database["public"]["Tables"]["orders"]["Row"];
@@ -69,7 +70,7 @@ export interface ProfileType {
   updated_at: string;
 }
 
-export interface Farm {
+export interface FarmType {
   name: string;
   address: string;
   state: string | null;
@@ -125,4 +126,66 @@ export interface CartItemType {
   quantity: number;
   stock?: number;
   seller: string;
+}
+// currently using
+export interface CartItem {
+  id?: number;
+  productId: number;
+  name: string;
+  price: number;
+  quantity: number;
+  stock?: number;
+  media?: Array<{ url: string }>;
+  seller?: string;
+}
+
+export interface Cart {
+  items: CartItem[];
+  total: number;
+}
+
+export interface OrderItem {
+  id: number;
+  order_id: number;
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+}
+
+export interface ShippingAddress {
+  fullName: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  email: string;
+  phone: string;
+}
+export interface OrderType {
+  id: number;
+  user_id: string;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  created_at: string;
+  updated_at: string;
+  total_amount: number;
+  shipping_address: ShippingAddress;
+  order_items: OrderItem[];
+}
+
+export interface WishlistItem {
+  id?: number;
+  productId: string;
+  name: string;
+  category: string;
+  price: number;
+  stock?: number;
+  description?: string;
+  media?: Array<{ url: string }>;
+  farm?: { name: string };
+}
+
+export interface Wishlist {
+  items: WishlistItem[];
 }

@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { OrderType } from "@/types/types";
 
 interface OrdersListProps {
-  orders: any[];
+  orders: OrderType[];
 }
 export const OrdersList = ({ orders }: OrdersListProps) => {
   // Get status badge color
@@ -35,7 +36,7 @@ export const OrdersList = ({ orders }: OrdersListProps) => {
 
         // Calculate total items
         const totalItems = order.order_items.reduce(
-          (sum: number, item: any) => sum + item.quantity,
+          (sum: number, item) => sum + item.quantity,
           0
         );
 

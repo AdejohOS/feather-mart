@@ -5,11 +5,10 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { Loader } from "lucide-react";
 import Link from "next/link";
 import { WishlistItems } from "./wishlist-items";
+import { Wishlist } from "@/types/types";
 
 interface WishlistClientWrapperProps {
-  initialWishlist: {
-    items: any[];
-  };
+  initialWishlist: Wishlist;
   isAuthenticated: boolean;
 }
 export const WishlistClientWrapper = ({

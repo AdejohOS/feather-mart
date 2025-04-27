@@ -9,9 +9,15 @@ import { useEffect, useRef, useState } from "react";
 import SearchSuggestions from "./search-suggestions";
 import { getSearchSuggestions } from "../actions";
 
+type SearchSuggestion = {
+  id: string;
+  name: string;
+  type: "product" | "farm" | "category" | "tag";
+};
+
 export const SearchBar = () => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
@@ -53,7 +59,7 @@ export const SearchBar = () => {
     }
   };
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = (suggestion: SearchSuggestion) => {
     if (suggestion.type === "product") {
       router.push(`/products/${suggestion.id}`);
     } else if (suggestion.type === "farm") {

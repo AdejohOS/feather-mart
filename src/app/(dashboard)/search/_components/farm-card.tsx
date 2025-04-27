@@ -8,7 +8,7 @@ import { MapPin } from "lucide-react";
 
 interface FarmCardProps {
   farm: {
-    id: number;
+    id: string;
     name: string;
     description?: string;
     location?: string;

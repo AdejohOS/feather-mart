@@ -6,16 +6,7 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { Loader, ShoppingCart, Trash } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
-interface WishlistItem {
-  productId: string;
-  name: string;
-  price: number;
-  category: string;
-  stock?: number;
-  media?: Array<{ url: string }>;
-  farm?: { name: string };
-}
+import { WishlistItem } from "@/types/types";
 
 interface WishlistItemsProps {
   items: WishlistItem[];
