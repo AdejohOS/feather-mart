@@ -3,7 +3,10 @@
 import {
   ClipboardList,
   HeartIcon,
+  List,
+  Loader,
   LogOut,
+  Settings,
   User,
   User2Icon,
 } from "lucide-react";
@@ -17,23 +20,40 @@ import {
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-
-import { useLogout } from "@/hooks/use-logout";
-import { useGetUserProfile } from "@/hooks/use-get-user-profile";
 import { DottedSeparator } from "./ui/dotted-separator";
+import { useAuth } from "@/hooks/use-auth";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { useState } from "react";
 
 export const UserMenu = () => {
-  const { data: user } = useGetUserProfile();
+  const { user, profile, loading, signOut } = useAuth();
+  const queryClient = useQueryClient();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const router = useRouter();
+
+  const handleSignOut = async () => {
+    setIsLoggingOut(true);
+    await signOut();
+    // Force refetch cart data
+    queryClient.invalidateQueries({ queryKey: ["cart"] });
+    setIsLoggingOut(false);
+  };
 
   const signIn = () => {
     router.push("/auth/sign-in");
   };
 
-  const { mutate: logout } = useLogout();
+  if (loading) {
+    return (
+      <div className="flex size-10 items-center justify-center rounded-full border border-neutral-300 bg-neutral-200">
+        <Loader className="text-muted-foreground size-4 animate-spin" />
+      </div>
+    );
+  }
 
-  const { full_name, avatar_url, email } = user || {
+  const { full_name, avatar_url, email, username } = profile || {
     full_name: "",
     avatar_url: "",
     email: "",
@@ -43,11 +63,11 @@ export const UserMenu = () => {
     ? full_name.charAt(0).toUpperCase()
     : email?.charAt(0).toLocaleUpperCase() ?? "U";
 
-  const surname = user?.full_name?.split(" ").pop();
+  const surname = profile?.full_name?.split(" ").pop();
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild className="relative outline-none">
-        <button className="flex items-center gap-1 border-none stroke-none">
+        <button className="flex items-center gap-1 border-none stroke-none cursor-pointer">
           {user ? (
             <Avatar className="size-10 border border-neutral-700 transition hover:opacity-75">
               <AvatarImage src={avatar_url || ""} />
@@ -56,7 +76,7 @@ export const UserMenu = () => {
               </AvatarFallback>
             </Avatar>
           ) : (
-            <User2Icon className="size-10 shrink-0" />
+            <User2Icon className="size-8 shrink-0" />
           )}
 
           <div className="text-start">
@@ -87,10 +107,16 @@ export const UserMenu = () => {
 
           <DottedSeparator className="mb-1" />
 
-          <DropdownMenuItem className="flex h-10 cursor-pointer items-center font-medium">
+          <DropdownMenuItem
+            onClick={() => router.push("/orders")}
+            className="flex h-10 cursor-pointer items-center font-medium"
+          >
             <ClipboardList className="mr-2 size-4" /> My Orders
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex h-10 cursor-pointer items-center font-medium">
+          <DropdownMenuItem
+            onClick={() => router.push("/wishlist")}
+            className="flex h-10 cursor-pointer items-center font-medium"
+          >
             <HeartIcon className="mr-2 size-4" /> My Wishlist
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -103,7 +129,7 @@ export const UserMenu = () => {
         >
           <div className="flex items-center gap-x-2 px-2.5 py-4">
             <Avatar className="size-[52px] border border-neutral-700">
-              <AvatarImage src={user.avatar_url || ""} />
+              <AvatarImage src={profile?.avatar_url || ""} />
               <AvatarFallback className="flex items-center justify-center bg-neutral-200 text-xl font-medium text-neutral-500">
                 {avatarFallback}
               </AvatarFallback>
@@ -116,22 +142,39 @@ export const UserMenu = () => {
             </div>
           </div>
           <DottedSeparator className="mb-1" />
-          <DropdownMenuItem className="flex h-10 cursor-pointer items-center font-medium">
-            <User className="mr-2 size-4" /> Profile
+          <DropdownMenuItem
+            onClick={() => router.push("/orders")}
+            className="flex h-10 cursor-pointer items-center font-medium"
+          >
+            <List className="mr-2 size-4" /> My Orders
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex h-10 cursor-pointer items-center font-medium">
-            <User className="mr-2 size-4" />
+          <DropdownMenuItem
+            onClick={() => router.push("/wishlist")}
+            className="flex h-10 cursor-pointer items-center font-medium"
+          >
+            <HeartIcon className="mr-2 size-4" /> My Wishlist
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => router.push(`/profile/${username}`)}
+            className="flex h-10 cursor-pointer items-center font-medium"
+          >
+            <Settings className="mr-2 size-4" />
             Manage Account
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex h-10 cursor-pointer items-center font-medium">
-            <User className="mr-2 size-4" /> Profile
-          </DropdownMenuItem>
+
           <DottedSeparator className="my-1" />
           <DropdownMenuItem
-            className="flex h-10 cursor-pointer items-center font-medium text-amber-700"
-            onClick={() => logout()}
+            className="flex h-10 cursor-pointer items-center font-medium text-amber-700 gap-2"
+            onClick={handleSignOut}
+            disabled={isLoggingOut}
           >
-            <LogOut className="mr-2 size-4" /> Logout
+            {isLoggingOut ? (
+              <Loader className="size-4 animate-spin " />
+            ) : (
+              <LogOut className=" size-4" />
+            )}{" "}
+            Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
       )}

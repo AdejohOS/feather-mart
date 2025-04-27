@@ -31,18 +31,7 @@ const routes = [
     icon: IoIosList,
     activeIcon: IoIosListBox,
   },
-  {
-    label: "Customers",
-    href: "/Customers",
-    icon: UsersIcon,
-    activeIcon: UsersIcon,
-  },
-  {
-    label: "Income",
-    href: "/income",
-    icon: UsersIcon,
-    activeIcon: UsersIcon,
-  },
+
   {
     label: "Settings",
     href: "/settings",

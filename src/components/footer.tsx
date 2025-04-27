@@ -11,7 +11,7 @@ import { DottedSeparator } from "./ui/dotted-separator";
 
 export const Footer = () => {
   return (
-    <footer className="bg-neutral-50">
+    <footer className="bg-neutral-50 border-t-1">
       <div className="mx-auto max-w-6xl px-4 py-20">
         <div className="grid gap-5 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           <div className="space-y-4">

@@ -5,27 +5,32 @@ import { useEffect, useState } from "react";
 import { addToCart, getCart } from "../actions";
 import { toast } from "sonner";
 import { Check, Loader, ShoppingCart } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface AddToCartButtonProps {
   productId: string;
+  quantity?: number;
   disabled?: boolean;
 }
 
 export const AddToCartButton = ({
   productId,
   disabled = false,
+  quantity = 1,
 }: AddToCartButtonProps) => {
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
 
+  // Check cart on mount
   useEffect(() => {
     const checkCart = async () => {
       try {
         const cart = await getCart();
-        const isInCart = cart.items.some(
+        const inCart = cart.items.some(
           (item: any) => item.productId === productId
         );
-        setIsInCart(isInCart);
+        setIsInCart(inCart);
       } catch (error) {
         console.error("Failed to check cart:", error);
       }
@@ -38,11 +43,11 @@ export const AddToCartButton = ({
 
     setIsLoading(true);
     try {
-      await addToCart(productId);
+      await addToCart(productId, quantity);
       setIsInCart(true);
-      toast.success("Product added to cart.");
+      toast.success("The item has been added to your cart.");
     } catch (error) {
-      toast.error("Failed to add product to cart.");
+      toast.error("Failed to add item to cart. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -52,7 +57,7 @@ export const AddToCartButton = ({
     <Button
       onClick={handleAddToCart}
       disabled={isLoading || isInCart || disabled}
-      className="w-full flex items-center gap-2"
+      className="w-full flex items-center gap-2 "
       aria-label="Add to cart"
     >
       {isLoading ? (

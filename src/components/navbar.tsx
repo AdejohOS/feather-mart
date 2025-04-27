@@ -11,6 +11,8 @@ import { UserMenu } from "./user-menu";
 import { useGetUserProfile } from "@/hooks/use-get-user-profile";
 import { Cart } from "./cart";
 import { CartButton } from "@/app/(dashboard)/cart/_components/cart-button";
+import { SearchBar } from "@/app/(dashboard)/search/_components/search-bar";
+import Image from "next/image";
 
 export const Navbar = () => {
   const { data: user } = useGetUserProfile();
@@ -61,26 +63,17 @@ export const Navbar = () => {
       </div>
 
       <nav className="h-[100px] bg-white shadow-sm lg:h-[120px]">
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col items-center justify-center bg-white px-4 sm:flex-row sm:justify-between md:gap-3">
-          <h1 className="text-center text-2xl font-bold md:text-3xl">
-            <Link href="/">
-              Feather<span className="text-teal-600">Mart</span>
-            </Link>
-          </h1>
-          <div className="relative w-[400px] md:w-[500px]">
-            <Input
-              placeholder="I am shoping for..."
-              type="search"
-              className="w-full pr-20"
+        <div className="mx-auto flex h-full w-full max-w-6xl flex-col items-center gap-3 justify-center bg-white px-4 sm:flex-row sm:justify-between md:gap-3">
+          <div className="relative ">
+            <Image
+              src="/images/logo.png"
+              alt="feathermart-logo"
+              width={200}
+              height={200}
             />
-            <Button
-              className="absolute right-0 top-0"
-              variant="ghost"
-              size="lg"
-            >
-              <Search className="size-5" />
-            </Button>
           </div>
+
+          <SearchBar />
 
           <div className="hidden gap-4 lg:flex lg:items-center">
             <UserMenu />

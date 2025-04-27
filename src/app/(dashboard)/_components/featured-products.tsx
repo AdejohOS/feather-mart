@@ -1,18 +1,33 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import Image from "next/image";
 import { useGetProducts } from "@/hooks/general-app/use-products";
 import { Heart, Star } from "lucide-react";
 import { AddToCartButton } from "../cart/_components/add-to-cart-button";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { WishlistButton } from "../wishlist/_components/wishlist-button";
+import Link from "next/link";
+
+const categories = [
+  { label: "Live Poultry", value: "live-poultry" },
+  { label: "Eggs", value: "eggs" },
+  { label: "Meat", value: "meat" },
+  { label: "Feed & Supplements", value: "feed-supplements" },
+  { label: "Equipment", value: "equipment" },
+];
 
 export const FeaturedProducts = () => {
   const { data: products, isPending } = useGetProducts();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredProducts =
+    selectedCategory === null
+      ? products
+      : products?.filter((p) => p.category === selectedCategory);
+
   return (
     <div className="bg-gray-50">
       <section className="mx-auto max-w-6xl space-y-4 px-4 py-16">
@@ -22,26 +37,40 @@ export const FeaturedProducts = () => {
           </h2>
           <div className="flex flex-col justify-between gap-3 md:flex-row">
             <p>Handpicked selections from our trusted farmers</p>
-            <div className="flex gap-x-2">
-              <Button size="sm" variant="ghost" className="bg-gray-100">
-                All
-              </Button>
-              <Button size="sm" variant="ghost">
-                Live Poultry
-              </Button>
-              <Button size="sm" variant="ghost">
-                Eggs
-              </Button>
-              <Button size="sm" variant="ghost">
-                Meat
-              </Button>
-              <Button size="sm" variant="ghost">
-                Feed Supplement
-              </Button>
-              <Button size="sm" variant="ghost">
-                Equipments
-              </Button>
-            </div>
+
+            <ScrollArea className="">
+              <div className="w-max flex gap-3 space-x-4 py-4">
+                <Button
+                  size="sm"
+                  variant={selectedCategory === null ? "secondary" : "ghost"}
+                  className={cn("bg-gray-100", {
+                    "bg-teal-600 text-white": selectedCategory === null,
+                  })}
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  All
+                </Button>
+
+                {categories.map((category) => (
+                  <Button
+                    size="sm"
+                    key={category.value}
+                    variant={
+                      selectedCategory === category.value ? "default" : "ghost"
+                    }
+                    className={cn("bg-gray-100", {
+                      "bg-teal-600 text-white":
+                        selectedCategory === category.value,
+                    })}
+                    onClick={() => setSelectedCategory(category.value)}
+                  >
+                    {category.label}
+                  </Button>
+                ))}
+              </div>
+
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
           </div>
         </div>
 
@@ -95,42 +124,34 @@ export const FeaturedProducts = () => {
           </div>
         )}
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-          {products?.map((product) => (
+          {filteredProducts?.map((product) => (
             <div
               key={product.id}
               className="overflow-hidden rounded-md border transition hover:shadow-md"
             >
               <div className="group relative">
-                <div className="absolute left-2 top-2 rounded bg-rose-400 px-2 py-1 text-xs font-bold text-white">
-                  SALE
-                </div>
-                <img
-                  src={product.image}
-                  alt="Free Range Chicken"
-                  className="h-48 w-full object-contain p-4"
-                />
-                <div className="absolute right-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          aria-label="Add to wishlist"
-                          variant="outline"
-                          className=""
-                          size="icon"
-                        >
-                          <Heart className="size-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Add to wishlist</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+                <Link href={`/products/${product.id}`}>
+                  <div className="absolute left-2 top-2 rounded bg-rose-400 px-2 py-1 text-xs font-bold text-white">
+                    SALE
+                  </div>
+                  <Image
+                    src={product.media[0]?.url || "/placeholder.svg"}
+                    alt={product.name}
+                    className="h-48 w-full object-contain p-4"
+                    width={1000}
+                    height={1000}
+                    loading="lazy"
+                  />
+                  <div className="absolute right-2">
+                    <WishlistButton productId={product.id} />
+                  </div>
+                </Link>
               </div>
               <div className="p-4">
-                <div className="text-sm text-gray-500">{product.category}</div>
+                <div className="text-sm text-gray-500">
+                  {" "}
+                  {product.category.replace("-", " ")}
+                </div>
                 <h3 className="mt-1 font-medium text-gray-800">
                   {product.name} {product.weight}
                 </h3>

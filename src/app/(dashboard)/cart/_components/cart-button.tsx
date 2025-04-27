@@ -4,54 +4,43 @@ import { Loader, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { getCart } from "../actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/use-cart";
 
 type CartItem = {
   quantity: number;
 };
 
 export const CartButton = () => {
-  const [itemCount, setItemCount] = useState(0);
+  const { cart, isLoading } = useCart();
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [prevCount, setPrevCount] = useState(0);
 
+  // Calculate total items in cart
+  const itemCount = cart.items.reduce(
+    (sum: number, item: CartItem) => sum + item.quantity,
+    0
+  );
+
+  // Trigger animation when item count increases
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const cart = await getCart();
-        const count = cart.items.reduce(
-          (sum: number, item: CartItem) => sum + item.quantity,
-          0
-        );
+    if (itemCount > prevCount && prevCount > 0) {
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+    setPrevCount(itemCount);
+  }, [itemCount, prevCount]);
 
-        setItemCount((prev) => {
-          if (count !== prev) {
-            if (count > prev && prev > 0) {
-              setIsAnimating(true);
-              setTimeout(() => setIsAnimating(false), 300);
-            }
-            return count;
-          }
-          return prev;
-        });
-      } catch (error) {
-        console.error("Failed to fetch cart:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchCart();
-
-    const interval = setInterval(fetchCart, 3000);
-    return () => clearInterval(interval);
-  }, []);
   return (
-    <Link href="/cart">
-      <Button className="relative" variant="ghost" size="icon">
-        <ShoppingCart className="size-6" />
+    <Link href="/cart" className="">
+      <Button
+        className="relative"
+        variant="ghost"
+        size="icon"
+        aria-label="View cart"
+      >
+        <ShoppingCart className="size-8" />
 
         {itemCount > 0 && (
           <span

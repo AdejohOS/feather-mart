@@ -109,7 +109,7 @@ export const Farms = () => {
                 </p>
                 <div className="flex items-center gap-2">
                   <strong>Certifications:</strong>{" "}
-                  <span className="flex items-center gap-3">
+                  <span className="flex items-center flex-wrap gap-3">
                     {farm.certifications && farm.certifications.length > 0 ? (
                       farm.certifications?.map((cert, index) => (
                         <Badge key={index} variant="secondary">

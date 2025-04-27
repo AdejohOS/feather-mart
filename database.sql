@@ -1,3 +1,4 @@
+pnpx supabase gen types typescript --project-id gvbpmhxsnejrbraprbys --schema public > types_db.ts
 
 -- Create the products table for the poultry marketplace
 CREATE TABLE products (
@@ -214,7 +215,6 @@ USING (
 );
 
 
-pnpx supabase gen types typescript --project-id gvbpmhxsnejrbraprbys --schema public > types_db.ts
 
 
 --updates
@@ -691,4 +691,113 @@ CREATE POLICY "Users can delete their own cart items"
 ON cart_items
 FOR DELETE
 USING (auth.uid() = user_id);
+
+
+
+
+--Orders
+-- Create enum type for order status
+CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled');
+
+-- Create orders table
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  total_amount DECIMAL(10, 2) NOT NULL,
+  status order_status NOT NULL DEFAULT 'pending',
+  shipping_address JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create order_items table
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id), -- corrected to UUID
+  product_name VARCHAR(255) NOT NULL,
+  product_price DECIMAL(10, 2) NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
+
+-- Add RLS (Row Level Security) policies for orders
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own orders"
+  ON orders
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own orders"
+  ON orders
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own orders"
+  ON orders
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+-- Add RLS policies for order_items
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their order items"
+  ON order_items
+  FOR SELECT
+  USING (
+    order_id IN (
+      SELECT id FROM orders WHERE user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert their order items"
+  ON order_items
+  FOR INSERT
+  WITH CHECK (
+    order_id IN (
+      SELECT id FROM orders WHERE user_id = auth.uid()
+    )
+  );
+
+
+
+  -- Create wishlist table
+CREATE TABLE IF NOT EXISTS wishlist_items (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, product_id)
+);
+
+-- Create index for better performance
+CREATE INDEX IF NOT EXISTS idx_wishlist_user_id ON wishlist_items(user_id);
+
+-- Add RLS (Row Level Security) policies for wishlist
+ALTER TABLE wishlist_items ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can only see their own wishlist items
+CREATE POLICY "Users can view their own wishlist items"
+  ON wishlist_items
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Policy: Users can only insert their own wishlist items
+CREATE POLICY "Users can insert their own wishlist items"
+  ON wishlist_items
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can only delete their own wishlist items
+CREATE POLICY "Users can delete their own wishlist items"
+  ON wishlist_items
+  FOR DELETE
+  USING (auth.uid() = user_id);
 

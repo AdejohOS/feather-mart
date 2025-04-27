@@ -1,53 +1,77 @@
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { createClient } from "@/utils/supabase/server";
 
-import { ShoppingCart, TrendingDown, TrendingUp } from "lucide-react";
+import { redirect } from "next/navigation";
+import VendorDashboardContent from "./(dashboard)/_components/vendor-dashboard-content";
 
-import React from "react";
-import { MdMoney } from "react-icons/md";
+const Page = async () => {
+  const supabase = await createClient();
 
-const page = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    // Redirect to login if not authenticated
+    redirect("/login?redirect=/vendor/analytics");
+  }
+
+  // Check if the user is a vendor
+  const { data: farm, error } = await supabase
+    .from("farms")
+    .select("id")
+    .eq("seller_id", user.id)
+    .single();
+
+  if (error || !farm) {
+    // Redirect to vendor registration if not a vendor
+    redirect("/vendor/register");
+  }
+
+  const { count: productCount } = await supabase
+    .from("products")
+    .select("*", { count: "exact", head: true })
+    .eq("farm_id", farm.id);
+
+  // Get recent orders for this vendor
+  const { data: recentOrders } = await supabase
+    .from("order_items")
+    .select(
+      `
+    id,
+    quantity,
+    product_price,
+    product_name,
+    created_at,
+    orders(id, status, created_at)
+  `
+    )
+    .eq("farm_id", farm.id)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  // Get total sales for this vendor
+  const { data: totalSales } = await supabase
+    .from("order_items")
+    .select("product_price, quantity")
+    .eq("farm_id", farm.id);
+
+  // Calculate total revenue
+  const totalRevenue =
+    totalSales?.reduce(
+      (sum, item) => sum + item.product_price * item.quantity,
+      0
+    ) || 0;
+
   return (
     <section className="">
-      <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="space-y-4 p-4 text-muted-foreground">
-            <p className="flex items-center gap-x-2 font-semibold">
-              <MdMoney className="size-5 text-teal-600" />
-              <span>Total Sales</span>
-            </p>
-            <h2 className="text-2xl font-bold">N100,000</h2>
-            <Badge
-              className="flex w-max items-center gap-x-2"
-              variant="outline"
-            >
-              <TrendingUp className="size-4" />
-              29.3%
-            </Badge>
-          </Card>
-          <Card className="space-y-4 p-4 text-muted-foreground">
-            <p className="flex items-center gap-x-2 font-semibold">
-              <ShoppingCart className="size-5 text-teal-600" />
-              <span>Total Orders</span>
-            </p>
-            <h2 className="text-2xl font-bold">200k</h2>
-            <Badge
-              className="flex w-max items-center gap-x-2"
-              variant="destructive"
-            >
-              <TrendingDown className="size-4" />
-              29.3%
-            </Badge>
-          </Card>
-        </div>
-        <div>
-          <Card className="p-4 text-muted-foreground">
-            <p className="font-semibold">Product Views</p>
-          </Card>
-        </div>
-      </div>
+      <VendorDashboardContent
+        farm={farm}
+        recentOrders={recentOrders || []}
+        totalRevenue={totalRevenue}
+        productCount={productCount || 0}
+      />
     </section>
   );
 };
 
-export default page;
+export default Page;

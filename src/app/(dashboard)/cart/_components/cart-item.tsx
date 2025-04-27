@@ -22,46 +22,24 @@ interface CartItemsProps {
 }
 
 import { formatCurrency } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { removeFromCart, updateCartItemQuantity } from "../actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+
+import { useCart } from "@/hooks/use-cart";
 
 export const CartItem = ({ items }: CartItemsProps) => {
-  const [removingItems, setRemovingItems] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [updatingItems, setUpdatingItems] = useState<Record<string, boolean>>(
-    {}
-  );
+  const { removeFromCart, updateQuantity } = useCart();
+  const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
+
   const handleRemoveItem = async (productId: string) => {
-    if (removingItems[productId]) return; // prevent double click spam
-
-    setRemovingItems((prev) => ({ ...prev, [productId]: true }));
-
-    try {
-      await removeFromCart(productId);
-      toast.success("The item has been removed from your cart.");
-    } catch (error) {
-      toast.error("Failed to remove item. Please try again.");
-    } finally {
-      setRemovingItems((prev) => ({ ...prev, [productId]: false }));
-    }
+    setLoadingItems((prev) => ({ ...prev, [productId]: true }));
+    await removeFromCart(productId);
+    setLoadingItems((prev) => ({ ...prev, [productId]: false }));
   };
 
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
-    if (quantity < 1 || updatingItems[productId]) return;
-
-    setUpdatingItems((prev) => ({ ...prev, [productId]: true }));
-
-    try {
-      await updateCartItemQuantity(productId, quantity);
-    } catch (error) {
-      toast.error("Failed to update quantity. Please try again.");
-    } finally {
-      setUpdatingItems((prev) => ({ ...prev, [productId]: false }));
-    }
+    setLoadingItems((prev) => ({ ...prev, [productId]: true }));
+    await updateQuantity(productId, quantity);
+    setLoadingItems((prev) => ({ ...prev, [productId]: false }));
   };
 
   return (
@@ -99,27 +77,27 @@ export const CartItem = ({ items }: CartItemsProps) => {
               <Button
                 variant="destructive"
                 className="flex items-center gap-2"
-                size="sm"
+                aria-label="Delete item"
+                size="xs"
                 onClick={() => handleRemoveItem(item.productId)}
-                disabled={removingItems[item.productId]}
+                disabled={loadingItems[item.productId]}
               >
-                {removingItems[item.productId] ? (
-                  <Loader className="size-4 animate-spin" />
+                {loadingItems[item.productId] ? (
+                  <Loader className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Trash className="size-4" />
+                  <Trash className="h-4 w-4" />
                 )}
-                Remove
               </Button>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <Button
                   variant="secondary"
                   aria-label="Decrease quantity"
-                  size="icon"
+                  size="xs"
                   onClick={() =>
                     handleUpdateQuantity(item.productId, item.quantity - 1)
                   }
-                  disabled={item.quantity <= 1 || updatingItems[item.productId]}
+                  disabled={loadingItems[item.productId]}
                 >
                   <Minus className="size-4" />
                 </Button>
@@ -127,14 +105,11 @@ export const CartItem = ({ items }: CartItemsProps) => {
                 <span className="w-14 text-center">{item.quantity}</span>
                 <Button
                   aria-label="Increase quantity"
-                  size="icon"
+                  size="xs"
                   onClick={() =>
                     handleUpdateQuantity(item.productId, item.quantity + 1)
                   }
-                  disabled={
-                    updatingItems[item.productId] ||
-                    (item.stock !== undefined && item.quantity >= item.stock)
-                  }
+                  disabled={loadingItems[item.productId]}
                 >
                   <Plus className="size-4" />
                 </Button>

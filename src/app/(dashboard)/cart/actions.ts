@@ -163,7 +163,7 @@ export async function getCart() {
 }
 
 // Add an item to the cart
-export async function addToCart(productId: string) {
+export async function addToCart(productId: string, quantity = 1) {
   const supabase = await createClient();
 
   // Check if user is authenticated
@@ -204,7 +204,7 @@ export async function addToCart(productId: string) {
       const { error: updateError } = await supabase
         .from("cart_items")
         .update({
-          quantity: existingItem.quantity + 1,
+          quantity: existingItem.quantity + quantity,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existingItem.id);
@@ -218,7 +218,7 @@ export async function addToCart(productId: string) {
       const { error: insertError } = await supabase.from("cart_items").insert({
         user_id: user.id,
         product_id: productId,
-        quantity: 1,
+        quantity: quantity,
       });
 
       if (insertError) {
@@ -251,14 +251,14 @@ export async function addToCart(productId: string) {
 
     if (existingItemIndex >= 0) {
       // Increment quantity if the item is already in the cart
-      cart.items[existingItemIndex].quantity += 1;
+      cart.items[existingItemIndex].quantity += quantity;
     } else {
       // Add the new item to the cart
       cart.items.push({
         productId,
         name: product.name,
         price: Number(product.price) || 0,
-        quantity: 1,
+        quantity: quantity,
         stock: Number(product.stock) || 0,
         media: product.media?.map((m: any) => ({ url: m.url })) || [],
         seller: product.farm?.name || "Unknown",
@@ -396,35 +396,39 @@ export async function mergeAnonymousCartWithUserCart(userId: string) {
 
   // For each item in the anonymous cart
   for (const item of anonymousCart.items) {
-    // Check if the item already exists in the user's cart
-    const { data: existingItem, error: existingItemError } = await supabase
-      .from("cart_items")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("product_id", item.productId)
-      .single();
-
-    if (existingItemError && existingItemError.code !== "PGRST116") {
-      console.error("Error checking existing cart item:", existingItemError);
-      continue;
-    }
-
-    if (existingItem) {
-      // Item already exists, update quantity
-      await supabase
+    try {
+      // Check if the item already exists in the user's cart
+      const { data: existingItem, error: existingItemError } = await supabase
         .from("cart_items")
-        .update({
-          quantity: existingItem.quantity + item.quantity,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existingItem.id);
-    } else {
-      // Item doesn't exist, add it
-      await supabase.from("cart_items").insert({
-        user_id: userId,
-        product_id: item.productId,
-        quantity: item.quantity,
-      });
+        .select("*")
+        .eq("user_id", userId)
+        .eq("product_id", item.productId)
+        .single();
+
+      if (existingItemError && existingItemError.code !== "PGRST116") {
+        console.error("Error checking existing cart item:", existingItemError);
+        continue;
+      }
+
+      if (existingItem) {
+        // Item already exists, update quantity
+        await supabase
+          .from("cart_items")
+          .update({
+            quantity: existingItem.quantity + item.quantity,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existingItem.id);
+      } else {
+        // Item doesn't exist, add it
+        await supabase.from("cart_items").insert({
+          user_id: userId,
+          product_id: item.productId,
+          quantity: item.quantity,
+        });
+      }
+    } catch (error) {
+      console.error(`Error merging cart item ${item.productId}:`, error);
     }
   }
 

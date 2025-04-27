@@ -1,35 +1,18 @@
-import { CartContentSkeleton } from "@/components/skeleton/cart-content-skeleton";
 import { getCart } from "./actions";
-import { createClient } from "@/utils/supabase/server";
-import { DottedSeparator } from "@/components/ui/dotted-separator";
-import { Card } from "@/components/ui/card";
-import { CartItem } from "./_components/cart-item";
-import { CartSummary } from "./_components/cart-summary";
-import { EmptyCart } from "./_components/empty-cart";
-import { formatCurrency } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { CartDetails } from "./_components/cart-details";
+import { ListCheck } from "lucide-react";
 
 const Page = async () => {
-  const { items, total, isAuthenticated } = await getCart();
+  const cart = await getCart();
 
   return (
     <section className="bg-gray-100">
-      <div className="mx-auto max-w-6xl px-4 pb-16 pt-4">
-        {items.length > 0 ? (
-          <div className="grid gap-8 md:grid-cols-3 ">
-            <Card className="p-4 text-gray-500 md:col-span-2">
-              <h2 className="text-xl font-bold">My Cart ({items.length})</h2>
-              <DottedSeparator className="my-4" />
-
-              <CartItem items={items} />
-            </Card>
-
-            <CartSummary total={total} isAuthenticated={isAuthenticated} />
-          </div>
-        ) : (
-          <EmptyCart />
-        )}
+      <div className="mx-auto max-w-6xl px-4 pb-16 pt-4 space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-3">
+          <ListCheck className="size-6" />
+          My Cart
+        </h2>
+        <CartDetails initialCart={cart} />
       </div>
     </section>
   );
