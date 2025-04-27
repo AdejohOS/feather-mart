@@ -5,7 +5,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { ArrowLeft, PenBox, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 import { useDeleteFarm } from "@/hooks/use-seller-farms";
 
 interface TaskActionProps {

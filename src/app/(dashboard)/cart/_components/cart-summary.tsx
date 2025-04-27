@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/ui/dotted-separator";
 
-import { useMemo } from "react";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 

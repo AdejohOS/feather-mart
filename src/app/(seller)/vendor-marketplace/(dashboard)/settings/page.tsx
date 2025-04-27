@@ -1,7 +1,5 @@
-import { Profile } from "@/app/(seller)/vendor-marketplace/(dashboard)/settings/_components/profile";
 import React from "react";
-import { Farms } from "./_components/farms";
-import { DangerZone } from "./_components/danger-zone";
+
 import { VendorSettings } from "./_components/vendor-set";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";

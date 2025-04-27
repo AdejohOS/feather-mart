@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { Loader, ShoppingCart, Trash } from "lucide-react";
@@ -21,10 +20,6 @@ interface WishlistItem {
 interface WishlistItemsProps {
   items: WishlistItem[];
 }
-
-type CartItem = {
-  quantity: number;
-};
 
 export const WishlistItems = ({ items }: WishlistItemsProps) => {
   const { removeFromWishlist, isRemovingFromWishlist } = useWishlist();

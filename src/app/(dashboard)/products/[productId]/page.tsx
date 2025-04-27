@@ -1,5 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
 import React from "react";
 import { ProductDetails } from "../_components/product-details";
 

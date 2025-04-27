@@ -6,7 +6,6 @@ import { useDeleteProduct } from "@/hooks/use-products";
 import { ArrowLeft, PenBox, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 interface TaskActionProps {
   productId: string;
@@ -14,11 +13,7 @@ interface TaskActionProps {
   onDelete?: boolean;
 }
 
-export const TaskAction = ({
-  productId,
-  onEdit,
-  onDelete,
-}: TaskActionProps) => {
+export const TaskAction = ({ productId, onEdit }: TaskActionProps) => {
   const router = useRouter();
 
   const { mutate: deleteProduct, isPending } = useDeleteProduct();

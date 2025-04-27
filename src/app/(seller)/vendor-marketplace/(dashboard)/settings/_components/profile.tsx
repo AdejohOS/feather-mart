@@ -8,7 +8,6 @@ import { useGetUserProfile } from "@/hooks/use-get-user-profile";
 import { useUpdateProfileModal } from "@/hooks/use-update-profile-modal";
 
 import { PenBoxIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
 import React from "react";
 
 export const Profile = () => {

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 
-import { FileImage, FileVideo, Loader, Trash2, Upload, X } from "lucide-react";
+import { FileImage, FileVideo, Loader, Trash2, Upload } from "lucide-react";
 import { FileInfo } from "@/types/types";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@/utils/supabase/client";
@@ -40,7 +40,7 @@ export const FileUpload = ({ onFilesChange, value = [] }: FileUploadPrpos) => {
         const fileName = `${uuidv4()}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from("farm_media")
           .upload(filePath, file);
 

@@ -7,7 +7,6 @@ import {
   Loader,
   LogOut,
   Settings,
-  User,
   User2Icon,
 } from "lucide-react";
 import {

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { useGetProducts } from "@/hooks/general-app/use-products";
-import { Heart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { AddToCartButton } from "../cart/_components/add-to-cart-button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

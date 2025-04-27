@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
-import { OrdersList } from "./_components/orders-list";
+
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
 import { Card } from "@/components/ui/card";
@@ -52,7 +52,7 @@ const Page = async () => {
           <div className="text-center py-12">
             <h2 className="text-xl font-semibold mb-4">No orders found</h2>
             <p className="text-gray-500 mb-8">
-              You haven't placed any orders yet.
+              You haven&apos;t placed any orders yet.
             </p>
             <Link href="/">
               <Button>Start Shopping</Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, MoreHorizontal, MoreVertical } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { TaskActions } from "./task-actions";
@@ -91,7 +91,6 @@ export const columns: ColumnDef<Order>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const color = getStatusColor(status);
 
       return (
         <Badge className={getStatusColor(status)}>

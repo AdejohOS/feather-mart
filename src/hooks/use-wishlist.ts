@@ -16,7 +16,6 @@ export function useWishlist() {
     data: wishlist = { items: [] },
     isLoading,
     error,
-    refetch,
   } = useQuery({
     queryKey: ["wishlist"],
     queryFn: getWishlist,
@@ -57,6 +56,8 @@ export function useWishlist() {
     isAddingToWishlist: addToWishlistMutation.isPending,
     isRemovingFromWishlist: removeFromWishlistMutation.isPending,
     isInWishlist: (productId: string) =>
-      wishlist.items.some((item: any) => item.productId === productId),
+      wishlist.items.some(
+        (item: { productId: string }) => item.productId === productId
+      ),
   };
 }

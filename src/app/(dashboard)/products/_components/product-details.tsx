@@ -23,13 +23,13 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { WishlistButton } from "../../wishlist/_components/wishlist-button";
-import Image from "next/image";
+
 import { ProductMedia } from "./product-media";
 import {
   useGetProduct,
   useGetRelatedProducts,
 } from "@/hooks/general-app/use-products";
-import { notFound } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

@@ -12,8 +12,6 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const email = user?.email;
-
   // Fetch the profile by username
   const { data: profile, error } = await supabase
     .from("profiles")

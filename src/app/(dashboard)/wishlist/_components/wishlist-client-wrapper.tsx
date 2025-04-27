@@ -47,7 +47,7 @@ export const WishlistClientWrapper = ({
         <div className="text-center py-12">
           <h2 className="text-xl font-semibold mb-4">Your wishlist is empty</h2>
           <p className="text-gray-500 mb-8">
-            Save items you're interested in for later.
+            Save items you&apos;re interested in for later.
           </p>
           <Link href="/">
             <Button>Start Shopping</Button>

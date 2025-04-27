@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { addToCart, getCart } from "../actions";
 import { toast } from "sonner";
 import { Check, Loader, ShoppingCart } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -18,7 +17,6 @@ export const AddToCartButton = ({
   disabled = false,
   quantity = 1,
 }: AddToCartButtonProps) => {
-  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
 

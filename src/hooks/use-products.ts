@@ -1,7 +1,6 @@
 import { Product } from "@/types/types";
 import { createClient } from "@/utils/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UploadedMedia } from "./use-supabase-uploads";
 import { toast } from "sonner";
 import {
   createProductAction,

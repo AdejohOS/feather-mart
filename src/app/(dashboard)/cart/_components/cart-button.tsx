@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";

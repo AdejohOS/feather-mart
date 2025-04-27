@@ -4,15 +4,13 @@ import { FaWhatsapp } from "react-icons/fa";
 import { FaPhoneVolume } from "react-icons/fa6";
 
 import Link from "next/link";
-import { Input } from "./ui/input";
-import { Search, User2Icon } from "lucide-react";
-import { Button } from "./ui/button";
 import { UserMenu } from "./user-menu";
 import { useGetUserProfile } from "@/hooks/use-get-user-profile";
-import { Cart } from "./cart";
+
 import { CartButton } from "@/app/(dashboard)/cart/_components/cart-button";
 import { SearchBar } from "@/app/(dashboard)/search/_components/search-bar";
 import Image from "next/image";
+import { User2Icon } from "lucide-react";
 
 export const Navbar = () => {
   const { data: user } = useGetUserProfile();

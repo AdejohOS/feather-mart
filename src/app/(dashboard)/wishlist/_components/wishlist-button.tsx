@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { cn } from "@/lib/utils";
 import { Heart, Loader } from "lucide-react";
-import { GoHeart, GoHeartFill } from "react-icons/go";
 
 interface WishlistButtonProps {
   productId: string;

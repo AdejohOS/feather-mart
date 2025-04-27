@@ -5,15 +5,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteProductAction } from "@/app/(standalone)/vendor-marketplace/products/action";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useQueryClient } from "@tanstack/react-query";
 
-import { ExternalLinkIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
 
 interface TaskActionsProps {
   id: number;

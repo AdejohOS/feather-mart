@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
 import Link from "next/link";
-import { useState } from "react";
+
 import Image from "next/image";
 import { WishlistButton } from "../../wishlist/_components/wishlist-button";
 import { Button } from "@/components/ui/button";
@@ -22,12 +22,6 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
-}
-
-interface CartItem {
-  productId: string;
-  quantity: number;
-  // ... any other fields
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {

@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UsersIcon } from "lucide-react";
 import { AiOutlineProduct, AiFillProduct } from "react-icons/ai";
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { IoIosList, IoIosListBox } from "react-icons/io";

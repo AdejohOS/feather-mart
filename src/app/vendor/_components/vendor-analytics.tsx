@@ -52,7 +52,6 @@ interface VendorAnalyticsProps {
 }
 
 export default function VendorAnalytics({
-  farmId,
   salesData,
   topProducts,
 }: VendorAnalyticsProps) {

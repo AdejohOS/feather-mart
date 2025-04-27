@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { useDebounce } from "@/hooks/use-debounce";

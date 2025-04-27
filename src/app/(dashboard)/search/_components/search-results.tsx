@@ -59,7 +59,7 @@ export const SearchResults = ({
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold mb-2">No results found</h2>
         <p className="text-gray-500 mb-6">
-          We couldn't find any matches for{" "}
+          We couldn&apos;t find any matches for{" "}
           {query ? `"${query}"` : "your search"}
           {category ? ` in category "${category}"` : ""}
           {tag ? ` with tag "${tag}"` : ""}

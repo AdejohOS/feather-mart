@@ -1,8 +1,5 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import React from "react";
-import { ProductTable } from "./_components/product-table";
-import { PlusCircle } from "lucide-react";
+
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { VendorProductList } from "./_components/vendor-product-list";

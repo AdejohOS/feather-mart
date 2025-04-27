@@ -70,7 +70,7 @@ export default function VendorDashboardContent({
             <div className="ml-3">
               <p className="text-sm text-yellow-700">
                 Your vendor account is pending approval. You can set up your
-                products, but they won't be visible to customers until your
+                products, but they won&apos;t be visible to customers until your
                 account is approved.
               </p>
             </div>
