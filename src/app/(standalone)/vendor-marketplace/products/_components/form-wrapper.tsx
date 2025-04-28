@@ -3,7 +3,6 @@
 import { useGetProduct } from "@/hooks/use-products";
 import { ProductForm } from "./product-form";
 import { notFound } from "next/navigation";
-import { useState } from "react";
 import { Loader } from "lucide-react";
 
 interface FormWrapperProps {

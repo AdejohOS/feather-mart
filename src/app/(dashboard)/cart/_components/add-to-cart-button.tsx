@@ -12,6 +12,15 @@ interface AddToCartButtonProps {
   disabled?: boolean;
 }
 
+interface CartItem {
+  productId: string;
+  quantity: number;
+}
+
+interface Cart {
+  items: CartItem[];
+}
+
 export const AddToCartButton = ({
   productId,
   disabled = false,
@@ -24,10 +33,8 @@ export const AddToCartButton = ({
   useEffect(() => {
     const checkCart = async () => {
       try {
-        const cart = await getCart();
-        const inCart = cart.items.some(
-          (item: any) => item.productId === productId
-        );
+        const cart: Cart = await getCart();
+        const inCart = cart.items.some((item) => item.productId === productId);
         setIsInCart(inCart);
       } catch (error) {
         console.error("Failed to check cart:", error);

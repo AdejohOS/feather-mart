@@ -25,9 +25,33 @@ const accountSchema = z.object({
 
 type AccountFormValues = z.infer<typeof accountSchema>;
 
+type User = {
+  email: string;
+  app_metadata: {
+    provider: string;
+  };
+  user_metadata: {
+    full_name: string;
+    avatar_url: string;
+  };
+  phone_number?: string | null;
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any; // Allow additional properties in the user object
+};
+
+type Profile = {
+  full_name: string;
+  avatar_url: string;
+  email: string;
+  phone_number?: string | null;
+  [key: string]: any; // Allow additional properties in the profile object
+};
+
 interface AccountDetailsProps {
-  user: any;
-  profile: any;
+  user: User;
+  profile: Profile;
   isOAuthUser: boolean;
   authProvider: string;
 }
@@ -75,8 +99,14 @@ export const AccountDetails = ({
       } else {
         throw new Error(result.error || "Failed to update email");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update email. Please try again.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(
+          error.message || "Failed to update email. Please try again."
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

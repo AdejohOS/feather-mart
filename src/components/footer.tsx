@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { Button } from "./ui/button";
-import { FaX } from "react-icons/fa6";
 import Image from "next/image";
 
 import { LinksAccordion } from "./links-accordion";

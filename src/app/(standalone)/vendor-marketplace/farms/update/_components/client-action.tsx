@@ -16,7 +16,6 @@ interface ClientActionProps {
 }
 
 export const ClientAction = ({ farmId }: ClientActionProps) => {
-  const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -38,7 +37,7 @@ export const ClientAction = ({ farmId }: ClientActionProps) => {
         if (result.success) {
           toast.success("Farm deleted successfully.");
           queryClient.invalidateQueries({ queryKey: ["seller-farm"] });
-          setOpen(false);
+
           router.push("/vendor-marketplace/settings");
         } else {
           toast.error(result.message);

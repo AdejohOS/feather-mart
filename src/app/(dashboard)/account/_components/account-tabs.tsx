@@ -8,16 +8,40 @@ import { AccountDetails } from "./account-details";
 import { PasswordChange } from "./password-change";
 import { ProfileSettings } from "./profile-settings";
 
+type User = {
+  email: string;
+  app_metadata: {
+    provider: string;
+  };
+  user_metadata: {
+    full_name: string;
+    avatar_url: string;
+  };
+  phone_number?: string | null;
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any; // Allow additional properties in the user object
+};
+
+type Profile = {
+  full_name: string;
+  avatar_url: string;
+  email: string;
+  phone_number?: string | null;
+  [key: string]: any; // Allow additional properties in the profile object
+};
 interface AccountTabsProps {
-  user: any;
-  profile: any;
+  user: User;
+  profile: Profile;
 }
 export const AccountTabs = ({ user, profile }: AccountTabsProps) => {
   const [activeTab, setActiveTab] = useState("account");
 
   // Determine if the user is using OAuth or email/password
-  const isOAuthUser =
-    user?.app_metadata?.provider && user.app_metadata.provider !== "email";
+  const isOAuthUser = !!(
+    user?.app_metadata?.provider && user.app_metadata.provider !== "email"
+  );
   const authProvider = user?.app_metadata?.provider || "email";
 
   return (

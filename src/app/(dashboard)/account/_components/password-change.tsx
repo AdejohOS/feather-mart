@@ -34,8 +34,15 @@ const passwordSchema = z
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
+type User = {
+  id: string;
+  email: string;
+  full_name: string;
+  phone_number: string | null;
+  avatar_url: string | null;
+};
 interface PasswordChangeProps {
-  user: any;
+  user: User;
 }
 export const PasswordChange = ({ user }: PasswordChangeProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,10 +76,12 @@ export const PasswordChange = ({ user }: PasswordChangeProps) => {
       } else {
         throw new Error(result.error || "Failed to update password");
       }
-    } catch (error: any) {
-      toast.error(
-        error.message || "Failed to update password. Please try again."
-      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(
+          error.message || "Failed to update password. Please try again."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }

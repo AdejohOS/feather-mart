@@ -360,8 +360,11 @@ export function ProductForm({ initialData, isEditing }: ProductFormProps) {
         await createProduct.mutateAsync(formData);
         router.push(`/vendor-marketplace/products`);
       }
-    } catch (error: any) {
-      toast.error(error.message || "Something went wrong");
+    } catch (error: unknown) {
+      if (error) {
+        console.error("An error occurred:", error);
+        toast.error("Failed to submit the product form. Please try again.");
+      }
     }
   }
 

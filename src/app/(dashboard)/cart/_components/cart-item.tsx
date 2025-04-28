@@ -1,7 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { DottedSeparator } from "@/components/ui/dotted-separator";
 import { Separator } from "@/components/ui/separator";
 import { Loader, Minus, Plus, Trash } from "lucide-react";
 import Image from "next/image";

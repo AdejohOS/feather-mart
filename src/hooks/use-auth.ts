@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { mergeAnonymousCartWithUserCart } from "@/app/(dashboard)/cart/actions";
 import { mergeAnonymousWishlistWithUserWishlist } from "@/app/(dashboard)/wishlist/action";
+import { User } from "@supabase/supabase-js";
 
 export interface ProfileType {
   id: string;
@@ -19,7 +20,7 @@ export interface ProfileType {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
@@ -121,9 +122,11 @@ export function useAuth() {
         message: "Logout successful",
         role: profile?.role,
       };
-    } catch (error: any) {
-      console.error("Logout process error:", error.message);
-      return { success: false, message: error.message };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Logout error:", error.message);
+        return { success: false, message: error.message };
+      }
     }
   };
 

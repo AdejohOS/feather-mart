@@ -40,9 +40,27 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
+type User = {
+  id: string;
+  email: string;
+  full_name: string | null;
+  username: string | null;
+  phone_number: string | null;
+  avatar_url: string | null;
+};
+
+type Profile = {
+  id: string;
+  email: string;
+  full_name: string | null;
+  username: string | null;
+  phone: string | null;
+  avatar_url: string | null;
+};
+
 interface ProfileSettingsProps {
-  user: any;
-  profile: any;
+  user: User;
+  profile: Profile;
 }
 export const ProfileSettings = ({ user, profile }: ProfileSettingsProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,10 +96,14 @@ export const ProfileSettings = ({ user, profile }: ProfileSettingsProps) => {
       } else {
         throw new Error(result.error || "Failed to update profile");
       }
-    } catch (error: any) {
-      toast.error(
-        error.message || "Failed to update profile. Please try again."
-      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(
+          error.message || "Failed to update profile. Please try again."
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -65,9 +65,14 @@ export const VendorSignInCard = ({ mode }: VendorSignInCardProps) => {
         },
       });
       if (error) throw error;
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred during Google sign up");
-      setLoading(false);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "An error occurred during Google sign up");
+      } else if (typeof error === "string") {
+        toast.error(error);
+      } else {
+        toast.error("An unknown error occurred");
+      }
     }
   };
 

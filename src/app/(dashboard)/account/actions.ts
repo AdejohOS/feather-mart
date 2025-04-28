@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { User } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
 interface ProfileData {
@@ -12,7 +13,7 @@ interface ProfileData {
 }
 
 // Helper function to check if user is using OAuth
-function isOAuthUser(user: any) {
+function isOAuthUser(user: User) {
   return user?.app_metadata?.provider && user.app_metadata.provider !== "email";
 }
 
@@ -49,9 +50,10 @@ export async function updateEmail(newEmail: string) {
 
     revalidatePath("/account");
     return { success: true };
-  } catch (error: any) {
-    console.error("Error updating email:", error);
-    return { success: false, error: error.message || "Failed to update email" };
+  } catch (error) {
+    const e = error as { message?: string };
+    console.error("Error updating email:", e);
+    return { success: false, error: e.message || "Failed to update email" };
   }
 }
 
@@ -101,12 +103,10 @@ export async function updatePassword(
     }
 
     return { success: true };
-  } catch (error: any) {
-    console.error("Error updating password:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to update password",
-    };
+  } catch (error) {
+    const e = error as { message?: string };
+    console.error("Error updating password:", e);
+    return { success: false, error: e.message || "Failed to update password" };
   }
 }
 
@@ -158,11 +158,9 @@ export async function updateProfile(profileData: ProfileData) {
     revalidatePath("/account");
     revalidatePath("/profile");
     return { success: true };
-  } catch (error: any) {
-    console.error("Error updating profile:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to update profile",
-    };
+  } catch (error) {
+    const e = error as { message?: string };
+    console.error("Error updating profile:", e);
+    return { success: false, error: e.message || "Failed to update profile" };
   }
 }
