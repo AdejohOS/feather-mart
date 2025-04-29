@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -61,10 +62,11 @@ export const HeroSlider = () => {
           style={{ height: "384px" }}
         >
           {/* Background image */}
-          <img
+          <Image
             src="/placeholder.svg?height=500&width=1200"
             alt="Background"
             className="absolute inset-0 h-full w-full object-cover opacity-50 mix-blend-overlay"
+            fill
           />
 
           {/* Content */}

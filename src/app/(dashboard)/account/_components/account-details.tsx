@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { updateEmail } from "../actions";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 const accountSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -25,8 +26,7 @@ const accountSchema = z.object({
 
 type AccountFormValues = z.infer<typeof accountSchema>;
 
-type User = {
-  email: string;
+type User = SupabaseUser & {
   app_metadata: {
     provider: string;
   };
@@ -34,11 +34,6 @@ type User = {
     full_name: string;
     avatar_url: string;
   };
-  phone_number?: string | null;
-  id?: string;
-  created_at?: string;
-  updated_at?: string;
-  [key: string]: any; // Allow additional properties in the user object
 };
 
 type Profile = {
@@ -46,7 +41,6 @@ type Profile = {
   avatar_url: string;
   email: string;
   phone_number?: string | null;
-  [key: string]: any; // Allow additional properties in the profile object
 };
 
 interface AccountDetailsProps {
@@ -129,7 +123,7 @@ export const AccountDetails = ({
         <CardTitle>Account Details</CardTitle>
         {isOAuthUser && (
           <CardDescription>
-            You're signed in with {formatProviderName(authProvider)}. Some
+            You&apos;re signed in with {formatProviderName(authProvider)}. Some
             account settings are managed by your provider.
           </CardDescription>
         )}
