@@ -76,10 +76,8 @@ export const VendorProductList = () => {
       await refetch();
       toast.success("The product has been successfully deleted.");
       setIsDialogOpen(false);
-    } catch (error: any) {
-      toast.error(
-        error.message || "Failed to delete the product. Please try again."
-      );
+    } catch (error) {
+      console.error("Error deleting product:", error);
     } finally {
       setIsDeleting(false);
       setProductToDelete(null);
@@ -109,10 +107,8 @@ export const VendorProductList = () => {
           !currentStatus ? "available" : "unavailable"
         } for purchase.`
       );
-    } catch (error: any) {
-      toast.error(
-        error.message || "Failed to update the product. Please try again."
-      );
+    } catch (error) {
+      console.error("Error updating product availability:", error);
     } finally {
       setIsMutating(false);
     }

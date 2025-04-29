@@ -30,6 +30,17 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+type ShippingAddress = {
+  fullName: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  email: string;
+  phone: string;
+};
+
 type Order = {
   id: number;
   quantity: number;
@@ -42,7 +53,7 @@ type Order = {
     created_at: string | null; // remove `| null`
     user_id: string;
     total_amount: number;
-    shipping_address: any;
+    shipping_address: ShippingAddress;
   };
 };
 
@@ -53,11 +64,12 @@ interface VendorOrdersListProps {
 export default function VendorOrdersList({
   initialOrders,
 }: VendorOrdersListProps) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const orders = initialOrders;
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =

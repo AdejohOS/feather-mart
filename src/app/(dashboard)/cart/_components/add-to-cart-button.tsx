@@ -52,6 +52,7 @@ export const AddToCartButton = ({
       setIsInCart(true);
       toast.success("The item has been added to your cart.");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to add item to cart. Please try again.");
     } finally {
       setIsLoading(false);

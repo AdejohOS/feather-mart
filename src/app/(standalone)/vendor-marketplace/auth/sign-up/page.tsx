@@ -5,8 +5,6 @@ import { createClient } from "@/utils/supabase/server";
 import React from "react";
 
 const SignUpPage = async () => {
-  const supabase = await createClient();
-
   return <SignInCard mode="signup" />;
 };
 

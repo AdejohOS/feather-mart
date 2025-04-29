@@ -11,6 +11,13 @@ interface OrderDetailsProps {
   order: OrderType;
 }
 
+type OrderItemType = {
+  id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+};
+
 export const OrderDetails = ({ order }: OrderDetailsProps) => {
   // Format the date
   const orderDate = new Date(order.created_at);
@@ -61,7 +68,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
             <div>
               <h3 className="font-medium mb-2">Items</h3>
               <div className="space-y-3">
-                {order.order_items.map((item: any) => (
+                {order.order_items.map((item: OrderItemType) => (
                   <div key={item.id} className="flex justify-between">
                     <div>
                       <p className="font-medium">{item.product_name}</p>

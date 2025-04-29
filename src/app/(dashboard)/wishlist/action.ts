@@ -4,6 +4,18 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
+type Wishlist = {
+  items: Array<{
+    productId: string;
+    name?: string;
+    price?: number;
+    stock?: number;
+    description?: string;
+    media?: Array<{ url: string }> | null;
+    farm?: string | null;
+  }>;
+};
+
 // Helper function to get the anonymous wishlist from cookies
 const getAnonymousWishlist = async () => {
   const cookieStore = await cookies();
@@ -22,7 +34,7 @@ const getAnonymousWishlist = async () => {
 };
 
 // Helper function to save the anonymous wishlist to cookies
-const saveAnonymousWishlist = async (wishlist: any) => {
+const saveAnonymousWishlist = async (wishlist: Wishlist) => {
   const cookieStore = await cookies();
   cookieStore.set("anonymous_wishlist", JSON.stringify(wishlist), {
     maxAge: 60 * 60 * 24 * 30, // 30 days

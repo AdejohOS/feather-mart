@@ -71,7 +71,7 @@ export async function createFarmAction(
       if (formDataObject[field] && typeof formDataObject[field] === "string") {
         try {
           formDataObject[field] = JSON.parse(formDataObject[field]);
-        } catch (e) {
+        } catch (_) {
           formDataObject[field] = [];
         }
       }
@@ -229,7 +229,7 @@ export async function updateFarmAction(
       };
     }
 
-    const { data: fetchFarm, error: fetchError } = await supabase
+    const { data: fetchFarm } = await supabase
       .from("farms")
       .select("seller_id")
       .eq("id", farmId)
@@ -272,7 +272,7 @@ export async function updateFarmAction(
       if (formDataObject[field] && typeof formDataObject[field] === "string") {
         try {
           formDataObject[field] = JSON.parse(formDataObject[field]);
-        } catch (e) {
+        } catch (_) {
           formDataObject[field] = [];
         }
       }
@@ -336,7 +336,7 @@ export async function updateFarmAction(
       wholesale_details: validatedData.data.wholesaleDetails,
     };
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("farms")
       .update(farmData)
       .eq("id", farmId);
@@ -412,7 +412,6 @@ export async function deleteFarmAction(farmId: string) {
   try {
     const {
       data: { user },
-      error: userError,
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -522,7 +521,6 @@ export async function deleteFarmMediaAction(mediaId: string) {
   const supabase = await createClient();
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser();
 
   if (!user) {

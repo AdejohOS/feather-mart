@@ -7,34 +7,24 @@ import { useState } from "react";
 import { AccountDetails } from "./account-details";
 import { PasswordChange } from "./password-change";
 import { ProfileSettings } from "./profile-settings";
+import type { Session } from "@supabase/supabase-js";
 
-type User = {
-  email: string;
-  app_metadata: {
-    provider: string;
-  };
-  user_metadata: {
-    full_name: string;
-    avatar_url: string;
-  };
-  phone_number?: string | null;
-  id?: string;
-  created_at?: string;
-  updated_at?: string;
-  [key: string]: any; // Allow additional properties in the user object
-};
+type User = Session["user"];
 
 type Profile = {
+  id: string;
   full_name: string;
   avatar_url: string;
   email: string;
+  phone: string;
   phone_number?: string | null;
-  [key: string]: any; // Allow additional properties in the profile object
+  username: string | null;
 };
 interface AccountTabsProps {
   user: User;
   profile: Profile;
 }
+
 export const AccountTabs = ({ user, profile }: AccountTabsProps) => {
   const [activeTab, setActiveTab] = useState("account");
 
@@ -65,7 +55,16 @@ export const AccountTabs = ({ user, profile }: AccountTabsProps) => {
       <TabsContent value="account">
         <Card>
           <AccountDetails
-            user={user}
+            user={{
+              ...user,
+              app_metadata: {
+                provider: user.app_metadata?.provider || "email",
+              },
+              user_metadata: {
+                full_name: user.user_metadata?.full_name || "",
+                avatar_url: user.user_metadata?.avatar_url || "",
+              },
+            }}
             profile={profile}
             isOAuthUser={isOAuthUser}
             authProvider={authProvider}
@@ -76,7 +75,15 @@ export const AccountTabs = ({ user, profile }: AccountTabsProps) => {
       <TabsContent value="password">
         <Card>
           {!isOAuthUser ? (
-            <PasswordChange user={user} />
+            <PasswordChange
+              user={{
+                id: user.id,
+                email: user.email ?? "",
+                full_name: user.user_metadata?.full_name ?? "",
+                avatar_url: user.user_metadata?.avatar_url ?? "",
+                phone_number: profile.phone_number ?? null,
+              }}
+            />
           ) : (
             <div className="p-6 text-center">
               <p className="text-gray-500">
@@ -90,7 +97,17 @@ export const AccountTabs = ({ user, profile }: AccountTabsProps) => {
 
       <TabsContent value="profile">
         <Card>
-          <ProfileSettings user={user} profile={profile} />
+          <ProfileSettings
+            user={{
+              id: user.id,
+              email: user.email ?? "",
+              full_name: user.user_metadata?.full_name ?? "",
+              avatar_url: user.user_metadata?.avatar_url ?? "",
+              phone_number: profile.phone_number ?? null,
+              username: profile.username ?? "",
+            }}
+            profile={profile}
+          />
         </Card>
       </TabsContent>
     </Tabs>

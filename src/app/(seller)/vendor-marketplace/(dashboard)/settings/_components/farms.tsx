@@ -90,7 +90,7 @@ export const Farms = () => {
                   )}
                 </p>
                 <p className="mt-2 rounded-md bg-neutral-50 p-4 text-sm">
-                  <em>" {farm.description} "</em>
+                  <em>&quot;{farm.description}&quot;</em>
                 </p>
               </div>
 

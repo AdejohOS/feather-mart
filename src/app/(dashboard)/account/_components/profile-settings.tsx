@@ -62,7 +62,7 @@ interface ProfileSettingsProps {
   user: User;
   profile: Profile;
 }
-export const ProfileSettings = ({ user, profile }: ProfileSettingsProps) => {
+export const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {

@@ -1,13 +1,29 @@
 "use server";
 
+import { Farm } from "@/types/types";
 import { createClient } from "@/utils/supabase/server";
+import { toast } from "sonner";
+interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+}
+
+interface Suggestion {
+  id: string;
+  name: string;
+  subtitle?: string;
+  type: "product" | "farm" | "category" | "tag";
+}
 
 // Get search suggestions for autocomplete
 export async function getSearchSuggestions(query: string) {
   if (!query || query.length < 2) return [];
 
   const supabase = await createClient();
-  const suggestions: any[] = [];
+  const suggestions: Suggestion[] = [];
 
   // Normalize query for search
   const normalizedQuery = query.toLowerCase().trim();
@@ -161,7 +177,7 @@ export async function getSearchResults(params: {
     }
 
     // If searching for farms
-    let farms: any[] = [];
+    let farms: Farm[] = [];
     let farmsCount = 0;
 
     if (query) {
@@ -190,8 +206,9 @@ export async function getSearchResults(params: {
       page,
       limit,
     };
-  } catch (error: any) {
-    console.error("Error fetching search results:", error?.message || error);
+  } catch (error: unknown) {
+    console.error(error);
+    toast.error("Error fetching search results:");
     return {
       products: [],
       farms: [],

@@ -44,7 +44,7 @@ type User = {
 interface PasswordChangeProps {
   user: User;
 }
-export const PasswordChange = ({ user }: PasswordChangeProps) => {
+export const PasswordChange = ({}: PasswordChangeProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {

@@ -52,7 +52,6 @@ interface VendorAnalyticsProps {
 }
 
 export const VendorAnalytics = ({
-  farmId,
   salesData,
   topProducts,
 }: VendorAnalyticsProps) => {

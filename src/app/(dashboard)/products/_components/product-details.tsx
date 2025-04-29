@@ -48,7 +48,6 @@ export const ProductDetails = ({ productId }: ProductDetailsProps) => {
     data: product,
     isLoading: isLoadingProduct,
     isFetching: isFetchingProduct,
-    error,
   } = useGetProduct(productId);
 
   const isLoadingProductData = isLoadingProduct || isFetchingProduct;

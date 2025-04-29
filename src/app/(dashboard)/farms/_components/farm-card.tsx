@@ -7,6 +7,14 @@ import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  count: number;
+  // Add more fields as needed
+}
+
 interface Farm {
   id: number | string;
   name: string;
@@ -26,7 +34,7 @@ interface Farm {
   pickupAvailable?: boolean;
   wholesaleAvailable?: boolean;
   media?: Array<{ url: string }>;
-  products?: any[];
+  products?: Product[];
   productCount?: number;
 }
 

@@ -47,7 +47,7 @@ interface CheckoutFormProps {
   userId: string;
 }
 
-export const CheckoutForm = ({ cart, userId }: CheckoutFormProps) => {
+export const CheckoutForm = ({ cart }: CheckoutFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("shipping");
   const router = useRouter();
@@ -58,7 +58,6 @@ export const CheckoutForm = ({ cart, userId }: CheckoutFormProps) => {
     handleSubmit,
     formState: { errors, isValid },
     trigger,
-    watch,
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     mode: "onChange",

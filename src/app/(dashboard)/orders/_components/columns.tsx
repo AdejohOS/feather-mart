@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TaskActions } from "./task-actions";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Json } from "../../../../../types_db";
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -38,7 +39,7 @@ export type Order = {
   id: number;
   user_id: string;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  shipping_address: any;
+  shipping_address: Json;
   total_amount: number;
   created_at: string | null;
   updated_at: string | null;

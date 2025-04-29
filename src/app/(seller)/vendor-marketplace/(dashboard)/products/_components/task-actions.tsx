@@ -22,7 +22,7 @@ interface TaskActionsProps {
 export const TaskActions = ({ id, children }: TaskActionsProps) => {
   const router = useRouter();
   const [isLoading, startTransition] = useTransition();
-  const [open, setOpen] = useState<boolean>(false);
+
   const queryClient = useQueryClient();
 
   const openProduct = () => {
@@ -49,12 +49,13 @@ export const TaskActions = ({ id, children }: TaskActionsProps) => {
         if (result.success) {
           toast.success("Product deleted successfully.");
           queryClient.invalidateQueries({ queryKey: ["products"] });
-          setOpen(false);
+
           router.push("/vendor-marketplace/products");
         } else {
           toast.error(result.message || "Failed to delete product");
         }
       } catch (error) {
+        console.log(error);
         toast.error("An unexpected error occured.");
       }
     });

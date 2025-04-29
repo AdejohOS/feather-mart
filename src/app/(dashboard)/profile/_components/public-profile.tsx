@@ -8,9 +8,34 @@ import { format } from "date-fns";
 import { Calendar, ExternalLink, MapPin, Package } from "lucide-react";
 import Link from "next/link";
 
+// Define the profile type
+interface Profile {
+  id: string;
+  full_name: string;
+  username: string;
+  avatar_url?: string;
+  created_at: string;
+  website: string;
+  // Add other relevant fields
+}
+
+interface OrderItem {
+  id: string;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+}
+
+interface Order {
+  id: string;
+  status: string;
+  created_at: string;
+  total_amount: number;
+  order_items: OrderItem[];
+}
 interface PublicProfileProps {
-  profile: any;
-  recentOrders: any[];
+  profile: Profile;
+  recentOrders: Order[];
   isOwnProfile: boolean;
 }
 
@@ -75,14 +100,21 @@ export const PublicProfile = ({
 
                 <div className="flex items-center text-sm">
                   <ExternalLink className="h-4 w-4 mr-2 text-gray-500" />
-                  <a
+                  <Link
                     href={profile.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
-                    browny.dev.replace(/^https?:\/\//, "")
-                  </a>
+                    <Link
+                      href={profile.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      browny.dev.replace(&#47;^https?:&#47;&#47;/, &#34;&#34;)
+                    </Link>
+                  </Link>
                 </div>
               </div>
 

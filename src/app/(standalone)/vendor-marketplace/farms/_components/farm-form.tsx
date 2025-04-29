@@ -381,8 +381,9 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
         await createFarm.mutateAsync(formData);
         router.push(`/vendor-marketplace/settings`);
       }
-    } catch (error: any) {
-      toast.error(error.message || "Something went wrong");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Something went wrong");
     }
   }
 
@@ -390,11 +391,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
 
   return (
     <Form {...form}>
-      <form
-        action=""
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-7"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="mb-6 grid grid-cols-5">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -442,7 +439,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
                         </FormControl>
                         <FormDescription>
                           Provide a detailed description of your farm, including
-                          its history, mission, and values.
+                          it&apos;s history, mission, and values.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -583,7 +580,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
                           />
                         </FormControl>
                         <FormDescription>
-                          Your farm's website or social media page
+                          Your farm&apos;s website or social media page
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -620,7 +617,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
                           <Input placeholder="123 Farm Road" {...field} />
                         </FormControl>
                         <FormDescription>
-                          Your farm's street address (will not be publicly
+                          Your farm&apos;s street address (will not be publicly
                           displayed)
                         </FormDescription>
                         <FormMessage />
@@ -830,7 +827,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
                           />
                         </FormControl>
                         <FormDescription>
-                          Describe your farm's production capacity
+                          Describe your farm&apos;s production capacity
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -1105,7 +1102,7 @@ export const FarmForm = ({ initialData, isEditing }: FarmFormProps) => {
                           />
                         </FormControl>
                         <FormDescription>
-                          Specify your farm's operating hours
+                          Specify your farm&apos;s operating hours
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
