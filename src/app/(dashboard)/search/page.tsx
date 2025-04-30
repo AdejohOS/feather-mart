@@ -4,11 +4,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResults } from "./_components/search-results";
 import { SearchFilters } from "./_components/search-filters";
 
-interface PageProps {
+const Page = async ({
+  searchParams,
+}: {
   searchParams: Record<string, string | string[] | undefined>;
-}
-
-const Page = async ({ searchParams }: PageProps) => {
+}) => {
   const query = typeof searchParams.q === "string" ? searchParams.q : "";
   const category =
     typeof searchParams.category === "string" ? searchParams.category : "";
