@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLinkIcon, PencilIcon, TrashIcon } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 interface TaskActionsProps {

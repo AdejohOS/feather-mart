@@ -38,7 +38,7 @@ export default function SearchSuggestions({
     }
     acc[suggestion.type].push(suggestion);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, Suggestion[]>);
 
   const getIcon = (type: string) => {
     switch (type) {

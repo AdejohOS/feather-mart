@@ -65,7 +65,7 @@ export default function VendorLayout({ children }: VendorLayoutProps) {
     };
 
     checkVendorStatus();
-  }, [user, supabase, toast]);
+  }, [user, supabase]);
 
   // Redirect if not authenticated or not a vendor
   useEffect(() => {

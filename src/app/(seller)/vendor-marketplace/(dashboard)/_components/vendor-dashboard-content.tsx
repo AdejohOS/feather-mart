@@ -21,9 +21,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
+interface Farm {
+  name: string;
+  description: string;
+  city: string;
+  state: string;
+  contactEmail: string;
+  isApproved: boolean;
+}
+
+interface Order {
+  id: string;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+  created_at: string;
+  orders: {
+    id: string;
+    status: "processing" | "shipped" | "delivered" | string;
+  };
+}
+
 interface VendorDashboardContentProps {
-  farm: any;
-  recentOrders: any[];
+  farm: Farm;
+  recentOrders: Order[];
   totalRevenue: number;
   productCount: number;
 }

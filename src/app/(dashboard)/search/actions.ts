@@ -3,13 +3,6 @@
 import { Farm } from "@/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { toast } from "sonner";
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  category?: string;
-  tags?: string[];
-}
 
 interface Suggestion {
   id: string;

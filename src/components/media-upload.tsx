@@ -24,7 +24,9 @@ import { createClient } from "@/utils/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { UseFormReturn } from "react-hook-form";
 
-interface MediaUploadProps<T extends Record<string, any> = any> {
+interface MediaUploadProps<
+  T extends Record<string, unknown> = Record<string, unknown>
+> {
   form: UseFormReturn<T>;
   maxFiles?: number;
   existingMedia?: UploadedMedia[];

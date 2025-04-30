@@ -21,7 +21,7 @@ import { useGetFarms } from "@/hooks/use-seller-farms";
 import { UseFormReturn } from "react-hook-form";
 
 interface FarmSelectorProps {
-  form: UseFormReturn<any>;
+  form: UseFormReturn;
 }
 
 export function FarmSelector({ form }: FarmSelectorProps) {

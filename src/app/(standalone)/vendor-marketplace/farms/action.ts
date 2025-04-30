@@ -71,7 +71,7 @@ export async function createFarmAction(
       if (formDataObject[field] && typeof formDataObject[field] === "string") {
         try {
           formDataObject[field] = JSON.parse(formDataObject[field]);
-        } catch (_) {
+        } catch {
           formDataObject[field] = [];
         }
       }
@@ -272,7 +272,7 @@ export async function updateFarmAction(
       if (formDataObject[field] && typeof formDataObject[field] === "string") {
         try {
           formDataObject[field] = JSON.parse(formDataObject[field]);
-        } catch (_) {
+        } catch {
           formDataObject[field] = [];
         }
       }

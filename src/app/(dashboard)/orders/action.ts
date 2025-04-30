@@ -5,6 +5,17 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getCart } from "../cart/actions";
 
+type OrderItems = {
+  productId: string;
+  name?: string;
+  price?: number;
+  stock?: number;
+  description?: string;
+  media?: Array<{ url: string }> | null;
+  farm?: string | null;
+  quantity?: number;
+};
+
 // Create an order from the cart
 export async function createOrder(formData: FormData) {
   const supabase = await createClient();
@@ -62,7 +73,7 @@ export async function createOrder(formData: FormData) {
     }
 
     // 2. Create order items
-    const orderItems = cart.items.map((item: any) => ({
+    const orderItems = cart.items.map((item: OrderItems) => ({
       order_id: order.id,
       product_id: item.productId,
       product_name: item.name,

@@ -4,17 +4,20 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
-type Wishlist = {
-  items: Array<{
-    productId: string;
-    name?: string;
-    price?: number;
-    stock?: number;
-    description?: string;
-    media?: Array<{ url: string }> | null;
-    farm?: string | null;
-  }>;
+type WishlistItem = {
+  productId: string;
+  name?: string;
+  price?: number;
+  stock?: number;
+  description?: string;
+  media?: Array<{ url: string }> | null;
+  farm?: string | null;
 };
+
+type Wishlist = {
+  items: WishlistItem[];
+};
+type ProductMedia = { url: string };
 
 // Helper function to get the anonymous wishlist from cookies
 const getAnonymousWishlist = async () => {
@@ -100,7 +103,7 @@ export async function getWishlist() {
     if (anonymousWishlist.items && anonymousWishlist.items.length > 0) {
       // Get all product IDs from the wishlist
       const productIds = anonymousWishlist.items.map(
-        (item: any) => item.productId
+        (item: WishlistItem) => item.productId
       );
 
       // Fetch product details for all products in the wishlist
@@ -135,7 +138,8 @@ export async function getWishlist() {
             price: Number(product.price) || 0,
             stock: Number(product.stock) || 0,
             description: product.description,
-            media: product.media?.map((m: any) => ({ url: m.url })) || [],
+            media:
+              product.media?.map((m: ProductMedia) => ({ url: m.url })) || [],
             farm: product.farm,
           };
         })
@@ -210,7 +214,7 @@ export async function addToWishlist(productId: string) {
 
     // Check if the product is already in the wishlist
     const existingItemIndex = wishlist.items.findIndex(
-      (item: any) => item.productId === productId
+      (item: WishlistItem) => item.productId === productId
     );
 
     if (existingItemIndex >= 0) {
@@ -260,7 +264,7 @@ export async function removeFromWishlist(productId: string) {
 
     // Filter out the item to remove
     wishlist.items = wishlist.items.filter(
-      (item: any) => item.productId !== productId
+      (item: WishlistItem) => item.productId !== productId
     );
 
     // Save the updated wishlist to cookies
