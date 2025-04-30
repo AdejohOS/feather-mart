@@ -1,24 +1,18 @@
-/* eslint-disable */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import React, { Suspense } from "react";
 import { getSearchResults } from "./actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResults } from "./_components/search-results";
 import { SearchFilters } from "./_components/search-filters";
 
-interface SearchPageProps {
-  searchParams: {
+const Page = async (props: {
+  searchParams: Promise<{
     q?: string;
     category?: string;
     tag?: string;
     page?: string;
-  };
-}
-// function to get the search results based on the query, category, and tag
-
-const Page = async ({ searchParams }: SearchPageProps) => {
+  }>;
+}) => {
+  const searchParams = await props.searchParams;
   const query = searchParams.q || "";
   const category = searchParams.category || "";
   const tag = searchParams.tag || "";
