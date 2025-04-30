@@ -4,20 +4,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResults } from "./_components/search-results";
 import { SearchFilters } from "./_components/search-filters";
 
-interface SearchPageProps {
-  searchParams: {
-    q?: string;
-    category?: string;
-    tag?: string;
-    page?: string;
-  };
+interface PageProps {
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-const Page = async ({ searchParams }: SearchPageProps) => {
-  const query = searchParams.q || "";
-  const category = searchParams.category || "";
-  const tag = searchParams.tag || "";
-  const page = Number.parseInt(searchParams.page || "1", 10);
+const Page = async ({ searchParams }: PageProps) => {
+  const query = typeof searchParams.q === "string" ? searchParams.q : "";
+  const category =
+    typeof searchParams.category === "string" ? searchParams.category : "";
+  const tag = typeof searchParams.tag === "string" ? searchParams.tag : "";
+  const page = Number.parseInt(
+    typeof searchParams.page === "string" ? searchParams.page : "1",
+    10
+  );
 
   // Get search results
   const results = await getSearchResults({
