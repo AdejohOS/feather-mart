@@ -1,26 +1,10 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import {
-  CreateFarmSchema,
-  CreateFarmValues,
-  CreateProductSchema,
-  UpdateFarmSchema,
-  UpdateFarmValues,
-  UpdateProfileSchema,
-} from "./schema";
+import { CreateProductSchema, UpdateProfileSchema } from "./schema";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { HousingSystem, PoultryType } from "@/types/types";
-import { deleteProductMedia } from "@/lib/upload-product";
 
-type MediaItem = {
-  url: string;
-  path: string;
-  name: string;
-  type: string;
-  size: number;
-};
+import { deleteProductMedia } from "@/lib/upload-product";
 
 type UploadedMediaItem = {
   url: string;
@@ -161,7 +145,7 @@ export async function createProductAction(
     if (formDataObject.tags && typeof formDataObject.tags === "string") {
       try {
         formDataObject.tags = JSON.parse(formDataObject.tags);
-      } catch (e) {
+      } catch {
         formDataObject.tags = [];
       }
     }
@@ -345,7 +329,7 @@ export async function updateProductAction(
     if (formDataObject.tags && typeof formDataObject.tags === "string") {
       try {
         formDataObject.tags = JSON.parse(formDataObject.tags);
-      } catch (e) {
+      } catch {
         formDataObject.tags = [];
       }
     }
@@ -392,7 +376,7 @@ export async function updateProductAction(
       origin: validatedData.data.origin || null,
     };
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("products")
       .update(productData)
       .eq("id", productId);
@@ -520,7 +504,6 @@ export async function deleteProductAction(productId: string) {
   try {
     const {
       data: { user },
-      error: userError,
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -633,7 +616,6 @@ export async function deleteMedia(mediaId: string) {
   try {
     const {
       data: { user },
-      error: userError,
     } = await supabase.auth.getUser();
 
     if (!user) {
