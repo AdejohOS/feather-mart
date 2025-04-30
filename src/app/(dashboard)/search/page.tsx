@@ -1,40 +1,23 @@
 import React, { Suspense } from "react";
-import type { Metadata } from "next";
 import { getSearchResults } from "./actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResults } from "./_components/search-results";
 import { SearchFilters } from "./_components/search-filters";
 
-export const dynamic = "force-dynamic";
-
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Record<string, string>;
-}): Promise<Metadata> {
-  return {
-    title: searchParams.q
-      ? `Search: ${searchParams.q}`
-      : searchParams.category
-      ? `Category: ${searchParams.category}`
-      : "Search Products",
-  };
-}
-
-const Page = async ({
-  searchParams,
-}: {
+interface SearchPageProps {
   searchParams: {
     q?: string;
     category?: string;
     tag?: string;
     page?: string;
   };
-}) => {
+}
+
+const Page = async ({ searchParams }: SearchPageProps) => {
   const query = searchParams.q || "";
   const category = searchParams.category || "";
   const tag = searchParams.tag || "";
-  const page = Number(searchParams.page || "1");
+  const page = Number.parseInt(searchParams.page || "1", 10);
 
   // Get search results
   const results = await getSearchResults({
