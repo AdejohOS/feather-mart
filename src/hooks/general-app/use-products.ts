@@ -7,6 +7,11 @@ type ProductWithFarm = Product & {
     id: string;
     name: string;
   } | null;
+  media: {
+    id: string;
+    url: string;
+    type: string;
+  }[];
 };
 
 export function useGetProducts() {
