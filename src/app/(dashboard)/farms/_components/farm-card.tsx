@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   count: number;
