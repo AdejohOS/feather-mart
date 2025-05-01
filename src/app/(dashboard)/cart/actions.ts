@@ -448,10 +448,10 @@ export async function createOrder(formData: FormData) {
 
   // Check if user is authenticated
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (!user) {
     // Redirect to login if not authenticated
     redirect("/login?redirect=/checkout");
   }
@@ -465,12 +465,12 @@ export async function createOrder(formData: FormData) {
 
   // Create shipping address object from form data
   const shippingAddress = {
-    fullName: formData.get("fullName"),
-    address: formData.get("address"),
-    city: formData.get("city"),
-    state: formData.get("state"),
-    postalCode: formData.get("postalCode"),
-    country: formData.get("country"),
+    fullName: String(formData.get("fullName") ?? ""),
+    address: String(formData.get("address") ?? ""),
+    city: String(formData.get("city") ?? ""),
+    state: String(formData.get("state") ?? ""),
+    postalCode: String(formData.get("postalCode") ?? ""),
+    country: String(formData.get("country") ?? ""),
   };
 
   // Start a transaction
@@ -482,7 +482,7 @@ export async function createOrder(formData: FormData) {
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
-        user_id: session.user.id,
+        user_id: user.id,
         total_amount: cart.total,
         status: "pending",
         shipping_address: shippingAddress,
@@ -515,18 +515,14 @@ export async function createOrder(formData: FormData) {
 
     // 3. Update product stock
     for (const item of cart.items) {
-      const { error: stockError } = await supabase
-        .from("products")
-        .update({
-          stock: supabase.rpc("decrement", { x: item.quantity }),
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", item.productId)
-        .gt("stock", item.quantity - 1); // Ensure we don't go below 0
+      const { error: stockError } = await supabase.rpc("decrement_stock", {
+        product_id: item.productId,
+        amount: item.quantity,
+      });
 
       if (stockError) {
         console.error("Error updating product stock:", stockError);
-        // Continue anyway, we don't want to fail the order just because stock update failed
+        // Optional: rollback order or notify admin
       }
     }
 
@@ -534,7 +530,7 @@ export async function createOrder(formData: FormData) {
     const { error: clearCartError } = await supabase
       .from("cart_items")
       .delete()
-      .eq("user_id", session.user.id);
+      .eq("user_id", user.id);
 
     if (clearCartError) {
       console.error("Error clearing cart:", clearCartError);
