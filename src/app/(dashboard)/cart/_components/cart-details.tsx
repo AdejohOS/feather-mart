@@ -17,7 +17,7 @@ interface CartDetailsProps {
 }
 
 export const CartDetails = ({ initialCart }: CartDetailsProps) => {
-  const { cart, isLoading } = useCart();
+  const { cart, isLoading, isAuthenticated } = useCart();
   // Use the fetched cart data, falling back to initial data
   const currentCart = isLoading ? initialCart : cart;
   const hasItems = currentCart.items.length > 0;
@@ -41,7 +41,7 @@ export const CartDetails = ({ initialCart }: CartDetailsProps) => {
 
           <CartSummary
             total={currentCart.total}
-            isAuthenticated={currentCart.isAuthenticated}
+            isAuthenticated={isAuthenticated}
           />
         </div>
       ) : (
