@@ -54,7 +54,7 @@ type Profile = {
   email: string;
   full_name: string | null;
   username: string | null;
-  phone: string | null;
+  phone_number?: string | null;
   avatar_url: string | null;
 };
 
@@ -75,7 +75,7 @@ export const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
       email: profile.email,
       full_name: profile?.full_name || "",
       username: profile?.username || "",
-      phone_number: profile?.phone || "",
+      phone_number: profile.phone_number || "",
       avatar_url: profile?.avatar_url || "",
     },
   });

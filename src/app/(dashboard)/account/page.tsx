@@ -24,6 +24,10 @@ const Page = async () => {
     .eq("id", user.id)
     .single();
 
+  if (!profile) {
+    redirect("/auth/sign-in?redirect=/account");
+  }
+
   return (
     <section className="bg-gray-50">
       <div className="px-4 max-w-6xl mx-auto pb-16 pt-4">
@@ -32,7 +36,7 @@ const Page = async () => {
           Manage Account
         </h1>
 
-        <AccountTabs user={user} profile={profile || null} />
+        <AccountTabs user={user} profile={profile} />
       </div>
     </section>
   );

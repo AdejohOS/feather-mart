@@ -13,10 +13,9 @@ type User = Session["user"];
 
 type Profile = {
   id: string;
-  full_name: string;
-  avatar_url: string;
+  full_name: string | null;
+  avatar_url: string | null;
   email: string;
-  phone: string;
   phone_number?: string | null;
   username: string | null;
 };
