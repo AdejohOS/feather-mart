@@ -53,7 +53,7 @@ type Order = {
     created_at: string | null; // remove `| null`
     user_id: string;
     total_amount: number;
-    shipping_address: ShippingAddress;
+    shipping_address: ShippingAddress | null;
   };
 };
 
