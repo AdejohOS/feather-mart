@@ -29,17 +29,20 @@ type Order = {
   };
 };
 
-function isValidShippingAddress(data: any): data is ShippingAddress {
+function isValidShippingAddress(data: unknown): data is ShippingAddress {
+  if (typeof data !== "object" || data === null) return false;
+
+  const addr = data as Record<string, unknown>;
+
   return (
-    data &&
-    typeof data.fullName === "string" &&
-    typeof data.address === "string" &&
-    typeof data.city === "string" &&
-    typeof data.state === "string" &&
-    typeof data.postalCode === "string" &&
-    typeof data.country === "string" &&
-    typeof data.email === "string" &&
-    typeof data.phone === "string"
+    typeof addr.fullName === "string" &&
+    typeof addr.address === "string" &&
+    typeof addr.city === "string" &&
+    typeof addr.state === "string" &&
+    typeof addr.postalCode === "string" &&
+    typeof addr.country === "string" &&
+    typeof addr.email === "string" &&
+    typeof addr.phone === "string"
   );
 }
 

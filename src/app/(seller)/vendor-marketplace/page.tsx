@@ -18,7 +18,7 @@ const Page = async () => {
   // Check if the user is a vendor
   const { data: farm, error } = await supabase
     .from("farms")
-    .select("id")
+    .select("id, name, description, city, state, contact_email")
     .eq("seller_id", user.id)
     .single();
 

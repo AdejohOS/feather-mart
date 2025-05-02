@@ -22,22 +22,22 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
 interface Farm {
+  id: string;
   name: string;
   description: string;
-  city: string;
-  state: string;
-  contactEmail: string;
-  isApproved: boolean;
+  city: string | null;
+  state: string | null;
+  contact_email: string | null;
 }
 
 interface Order {
-  id: string;
+  id: number;
   product_name: string;
   product_price: number;
   quantity: number;
-  created_at: string;
+  created_at: string | null;
   orders: {
-    id: string;
+    id: number;
     status: "processing" | "shipped" | "delivered" | string;
   };
 }
@@ -60,6 +60,8 @@ export default function VendorDashboardContent({
   // Calculate order count
   const orderCount = recentOrders.length;
 
+  const isApproved = false;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -70,7 +72,7 @@ export default function VendorDashboardContent({
         </Button>
       </div>
 
-      {!farm.isApproved && (
+      {isApproved && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -191,7 +193,9 @@ export default function VendorDashboardContent({
                         <span>Order #{order.orders.id}</span>
                         <span>•</span>
                         <span>
-                          {format(new Date(order.created_at), "MMM d, yyyy")}
+                          {order.created_at
+                            ? format(new Date(order.created_at), "MMM d, yyyy")
+                            : "No date available"}
                         </span>
                       </div>
                     </div>
@@ -262,7 +266,7 @@ export default function VendorDashboardContent({
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Contact</h3>
-                  <p>{farm.contactEmail}</p>
+                  <p>{farm.contact_email}</p>
                 </div>
               </div>
             </div>
