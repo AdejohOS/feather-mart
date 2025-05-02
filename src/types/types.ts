@@ -167,10 +167,10 @@ export interface OrderType {
   id: number;
   user_id: string;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
   total_amount: number;
-  shipping_address: ShippingAddress;
+  shipping_address: ShippingAddress | null;
   order_items: OrderItem[];
 }
 

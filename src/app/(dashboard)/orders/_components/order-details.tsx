@@ -3,12 +3,49 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/ui/dotted-separator";
-import { OrderType } from "@/types/types";
 
 import { format } from "date-fns";
 
+export interface OrderItem {
+  id: number;
+  order_id: number;
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+}
+
+export interface ShippingAddress {
+  fullName: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  email: string;
+  phone: string;
+}
+
+export interface Order {
+  id: number;
+  user_id: string;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  created_at: string | null;
+  updated_at: string | null;
+  total_amount: number;
+  shipping_address: ShippingAddress;
+  order_items: OrderItem[];
+}
+
+export interface OrderSummary {
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+}
+
 interface OrderDetailsProps {
-  order: OrderType;
+  order: Order;
 }
 
 type OrderItemType = {
@@ -20,8 +57,10 @@ type OrderItemType = {
 
 export const OrderDetails = ({ order }: OrderDetailsProps) => {
   // Format the date
-  const orderDate = new Date(order.created_at);
-  const formattedDate = format(orderDate, "MMMM d, yyyy 'at' h:mm a");
+  const orderDate = order.created_at ? new Date(order.created_at) : null;
+  const formattedDate = orderDate
+    ? format(orderDate, "MMMM d, yyyy 'at' h:mm a")
+    : "Date not available";
 
   // Calculate order totals
   const subtotal = order.order_items.reduce(

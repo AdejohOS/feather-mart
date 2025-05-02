@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
-import { OrderDetails } from "../_components/order-details";
+import { Order, OrderDetails } from "../_components/order-details";
 
 const Page = async ({ params }: { params: Promise<{ orderId: number }> }) => {
   const { orderId } = await params;
@@ -28,6 +28,7 @@ const Page = async ({ params }: { params: Promise<{ orderId: number }> }) => {
       order_items (*)
     `
     )
+    .not("shipping_address", "is", null)
     .eq("id", orderId)
     .eq("user_id", user.id)
     .single();
@@ -35,6 +36,8 @@ const Page = async ({ params }: { params: Promise<{ orderId: number }> }) => {
   if (error || !order) {
     notFound();
   }
+
+  const typedOrder = order as unknown as Order;
 
   return (
     <section className="bg-gray-50">
@@ -51,7 +54,7 @@ const Page = async ({ params }: { params: Promise<{ orderId: number }> }) => {
               </p>
             </div>
 
-            <OrderDetails order={order} />
+            <OrderDetails order={typedOrder} />
 
             <div className="mt-8 flex justify-center gap-4">
               <Link href="/orders">
