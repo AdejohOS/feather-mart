@@ -31,8 +31,10 @@ export const OrdersList = ({ orders }: OrdersListProps) => {
     <div className="space-y-4">
       {orders.map((order) => {
         // Format the date
-        const orderDate = new Date(order.created_at);
-        const formattedDate = format(orderDate, "MMMM d, yyyy");
+        const orderDate = order.created_at ? new Date(order.created_at) : null;
+        const formattedDate = orderDate
+          ? format(orderDate, "MMMM d, yyyy 'at' h:mm a")
+          : "Date not available";
 
         // Calculate total items
         const totalItems = order.order_items.reduce(
