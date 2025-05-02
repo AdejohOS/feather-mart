@@ -11,25 +11,24 @@ import Link from "next/link";
 // Define the profile type
 interface Profile {
   id: string;
-  full_name: string;
+  full_name: string | null;
   username: string;
-  avatar_url?: string;
-  created_at: string;
-  website: string;
+  avatar_url: string | null;
+  created_at: string | null;
+
   // Add other relevant fields
 }
 
 interface OrderItem {
-  id: string;
+  id: number;
   product_name: string;
-  product_price: number;
   quantity: number;
 }
 
 interface Order {
-  id: string;
+  id: number;
   status: string;
-  created_at: string;
+  created_at: string | null;
   total_amount: number;
   order_items: OrderItem[];
 }
@@ -101,13 +100,13 @@ export const PublicProfile = ({
                 <div className="flex items-center text-sm">
                   <ExternalLink className="h-4 w-4 mr-2 text-gray-500" />
                   <Link
-                    href={profile.website}
+                    href="/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
                     <Link
-                      href={profile.website}
+                      href="/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
@@ -146,7 +145,9 @@ export const PublicProfile = ({
                       <div>
                         <h3 className="font-medium">Order #{order.id}</h3>
                         <p className="text-sm text-gray-500">
-                          {format(new Date(order.created_at), "MMMM d, yyyy")}
+                          {order.created_at
+                            ? format(new Date(order.created_at), "MMMM d, yyyy")
+                            : "Date unavailable"}
                         </p>
                       </div>
                       <Badge
