@@ -174,7 +174,7 @@ const productFormSchema = z
     path: ["minimumOrder"],
   });
 
-type ProductFormValues = z.infer<typeof productFormSchema>;
+export type ProductFormValues = z.infer<typeof productFormSchema>;
 
 // Default values for the form
 const defaultValues: Partial<ProductFormValues> = {
