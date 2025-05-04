@@ -19,9 +19,10 @@ import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useGetFarms } from "@/hooks/use-seller-farms";
 import { UseFormReturn } from "react-hook-form";
+import { ProductFormValues } from "./product-form";
 
 interface FarmSelectorProps {
-  form: UseFormReturn;
+  form: UseFormReturn<ProductFormValues>;
 }
 
 export function FarmSelector({ form }: FarmSelectorProps) {

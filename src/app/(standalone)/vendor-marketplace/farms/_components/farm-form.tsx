@@ -168,7 +168,7 @@ const farmFormSchema = z.object({
   existingMedia: z.array(z.custom<UploadedMedia>()).optional(),
 });
 
-type FarmFormValues = z.infer<typeof farmFormSchema>;
+export type FarmFormValues = z.infer<typeof farmFormSchema>;
 
 // Default values for the form
 const defaultValues: Partial<FarmFormValues> = {
