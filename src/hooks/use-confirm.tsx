@@ -1,5 +1,5 @@
 import { ResponsiveModal } from "@/components/responsive-modal";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,7 +13,8 @@ import { JSX } from "react/jsx-runtime";
 
 export const useConfirm = (
   title: string,
-  message: string
+  message: string,
+  variant: ButtonProps["variant"] = "default"
 ): [(props: { isLoading: boolean }) => JSX.Element, () => Promise<unknown>] => {
   const [promise, setPromise] = useState<{
     resolve: (value: boolean) => void;
@@ -56,7 +57,7 @@ export const useConfirm = (
             </Button>
             <Button
               onClick={handleConfirm}
-              variant="secondary"
+              variant={variant}
               className="flex w-full items-center gap-2 lg:w-auto"
               disabled={isLoading}
             >
