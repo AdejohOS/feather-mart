@@ -3,6 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import VendorDashboardContent from "./(dashboard)/_components/vendor-dashboard-content";
 
+export const dynamic = "force-dynamic";
+
 const Page = async () => {
   const supabase = await createClient();
 
