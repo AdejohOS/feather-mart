@@ -5,7 +5,7 @@ export const Category = () => {
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        <div className="flex h-[180px] w-[100px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-amber-50 to-white p-4 transition hover:to-amber-50">
+        <div className="flex h-[180px] w-[150px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-amber-50 to-white p-4 transition hover:to-amber-50">
           <div className="relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-white p-2 drop-shadow-sm">
             <div className="absolute right-1 top-1 rounded bg-emerald-500 px-2 py-0.5 text-xs font-medium text-white">
               30%
@@ -17,7 +17,7 @@ export const Category = () => {
             <p className="mt-1 text-sm text-gray-500">320 items</p>
           </div>
         </div>
-        <div className="flex h-[180px] w-[100px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-green-50 to-white p-4 transition hover:to-green-50">
+        <div className="flex h-[180px] w-[150px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-green-50 to-white p-4 transition hover:to-green-50">
           <div className="relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-white p-2 drop-shadow-sm">
             <div className="absolute right-1 top-1 rounded bg-emerald-500 px-2 py-0.5 text-xs font-medium text-white">
               30%
@@ -30,7 +30,7 @@ export const Category = () => {
           </div>
         </div>
 
-        <div className="flex h-[180px] w-[100px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-orange-50 to-white p-4 transition hover:to-orange-50">
+        <div className="flex h-[180px] w-[150px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-orange-50 to-white p-4 transition hover:to-orange-50">
           <div className="relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-white p-2 drop-shadow-sm">
             <div className="absolute right-1 top-1 rounded bg-emerald-500 px-2 py-0.5 text-xs font-medium text-white">
               30%
@@ -42,7 +42,7 @@ export const Category = () => {
             <p className="mt-1 text-sm text-gray-500">48 items</p>
           </div>
         </div>
-        <div className="flex h-[180px] w-[100px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-pink-50 to-white p-4 transition hover:to-pink-50">
+        <div className="flex h-[180px] w-[150px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-pink-50 to-white p-4 transition hover:to-pink-50">
           <div className="relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-white p-2 drop-shadow-sm">
             <div className="absolute right-1 top-1 rounded bg-emerald-500 px-2 py-0.5 text-xs font-medium text-white">
               30%
@@ -54,7 +54,7 @@ export const Category = () => {
             <p className="mt-1 text-sm text-gray-500">548 items</p>
           </div>
         </div>
-        <div className="flex h-[180px] w-[100px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-blue-50 to-white p-4 transition hover:to-blue-50">
+        <div className="flex h-[180px] w-[150px] sm:w-[180px] md:w-[220px] flex-col items-center justify-center rounded-lg bg-gradient-to-b from-blue-50 to-white p-4 transition hover:to-blue-50">
           <div className="relative flex h-full w-full flex-col items-center justify-center rounded-lg bg-white p-2 drop-shadow-sm">
             <div className="absolute right-1 top-1 rounded bg-emerald-500 px-2 py-0.5 text-xs font-medium text-white">
               30%
