@@ -10,7 +10,6 @@ import { useGetUserProfile } from "@/hooks/use-get-user-profile";
 import { CartButton } from "@/app/(dashboard)/cart/_components/cart-button";
 import { SearchBar } from "@/app/(dashboard)/search/_components/search-bar";
 import Image from "next/image";
-import { User2Icon } from "lucide-react";
 
 export const Navbar = () => {
   const { data: user } = useGetUserProfile();
@@ -53,8 +52,7 @@ export const Navbar = () => {
             </Link>
           </div>
           <div className="flex items-center gap-3 text-muted-foreground lg:hidden">
-            {user ? <UserMenu /> : <User2Icon className="size-8 shrink-0" />}
-
+            <UserMenu />
             <CartButton />
           </div>
         </div>

@@ -80,7 +80,7 @@ export const UserMenu = () => {
 
           <div className="text-start">
             <p className="text-sm">
-              {user ? <span>Hi, {surname} </span> : "Account"}
+              {user ? <span>Hi, {surname || "User"} </span> : "Account"}
             </p>
             <p className="text-sm font-medium">
               {user ? "Account" : "Login/Register"}
