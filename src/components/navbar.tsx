@@ -51,7 +51,7 @@ export const Navbar = () => {
               Sell on FeatherMart!
             </Link>
           </div>
-          <div className="flex items-center gap-3 text-muted-foreground lg:hidden">
+          <div className="flex items-center gap-3 text-muted-foreground lg:hidden justify-end w-full">
             <UserMenu />
             <CartButton />
           </div>
