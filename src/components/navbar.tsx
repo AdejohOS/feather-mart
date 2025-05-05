@@ -5,14 +5,12 @@ import { FaPhoneVolume } from "react-icons/fa6";
 
 import Link from "next/link";
 import { UserMenu } from "./user-menu";
-import { useGetUserProfile } from "@/hooks/use-get-user-profile";
 
 import { CartButton } from "@/app/(dashboard)/cart/_components/cart-button";
 import { SearchBar } from "@/app/(dashboard)/search/_components/search-bar";
 import Image from "next/image";
 
 export const Navbar = () => {
-  const { data: user } = useGetUserProfile();
   return (
     <header className="fixed left-0 top-0 z-50 h-[150px] w-full">
       <div className="h-[50px] bg-neutral-50 lg:h-[30px]">
