@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { addToCart, getCart } from "../actions";
-import { toast } from "sonner";
 import { Check, Loader, ShoppingCart } from "lucide-react";
+import { useCart } from "@/hooks/use-cart";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -26,47 +25,30 @@ export const AddToCartButton = ({
   disabled = false,
   quantity = 1,
 }: AddToCartButtonProps) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
+  const { cart, addToCart, isAddingToCart } = useCart();
 
   // Check cart on mount
   useEffect(() => {
-    const checkCart = async () => {
-      try {
-        const cart: Cart = await getCart();
-        const inCart = cart.items.some((item) => item.productId === productId);
-        setIsInCart(inCart);
-      } catch (error) {
-        console.error("Failed to check cart:", error);
-      }
-    };
-    checkCart();
-  }, [productId]);
+    const inCart = cart.items.some((item) => item.productId === productId);
+    setIsInCart(inCart);
+  }, [cart.items, productId]);
 
   const handleAddToCart = async () => {
-    if (isLoading || isInCart || disabled) return;
+    if (isInCart || disabled) return;
 
-    setIsLoading(true);
-    try {
-      await addToCart(productId, quantity);
-      setIsInCart(true);
-      toast.success("The item has been added to your cart.");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add item to cart. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    addToCart(productId, quantity);
+    setIsInCart(true);
   };
 
   return (
     <Button
       onClick={handleAddToCart}
-      disabled={isLoading || isInCart || disabled}
+      disabled={isAddingToCart || isInCart || disabled}
       className="w-full flex items-center gap-2 "
       aria-label="Add to cart"
     >
-      {isLoading ? (
+      {isAddingToCart ? (
         <>
           <Loader className=" h-4 w-4 animate-spin" />
           Adding to Cart...
