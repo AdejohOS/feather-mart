@@ -51,9 +51,7 @@ export function useGetFarms() {
 
       const { data: farms, error: farmsError } = await supabase
         .from("farms")
-        .select(
-          `*, media:farm_media(id, url, type), products(id,name,price, count)`
-        )
+        .select(`*, media:farm_media(id, url, type), products:products(id)`)
         .order("name", { ascending: true });
 
       if (farmsError) {

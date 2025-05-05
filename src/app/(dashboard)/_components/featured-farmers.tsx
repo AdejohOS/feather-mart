@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const FeaturedFarmers = () => {
   const { data: farms, isPending } = useGetFarms();
+  console.log("Farms", farms);
 
   return (
     <main className="bg-gray-50">
