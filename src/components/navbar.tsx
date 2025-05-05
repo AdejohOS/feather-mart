@@ -58,14 +58,14 @@ export const Navbar = () => {
 
       <nav className="h-[100px] bg-white shadow-sm lg:h-[120px]">
         <div className="mx-auto flex h-full w-full max-w-6xl flex-col items-center gap-3 justify-center bg-white px-4 sm:flex-row sm:justify-between md:gap-3">
-          <div className="relative ">
+          <Link href="/" className="relative ">
             <Image
               src="/images/logo.png"
               alt="feathermart-logo"
               width={200}
               height={200}
             />
-          </div>
+          </Link>
 
           <SearchBar />
 
