@@ -16,10 +16,6 @@ interface CartItem {
   quantity: number;
 }
 
-interface Cart {
-  items: CartItem[];
-}
-
 export const AddToCartButton = ({
   productId,
   disabled = false,
