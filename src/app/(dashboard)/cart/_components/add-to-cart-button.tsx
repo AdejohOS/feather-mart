@@ -11,11 +11,6 @@ interface AddToCartButtonProps {
   disabled?: boolean;
 }
 
-interface CartItem {
-  productId: string;
-  quantity: number;
-}
-
 export const AddToCartButton = ({
   productId,
   disabled = false,
