@@ -11,7 +11,7 @@ interface Product {
   id: string;
   name: string;
   price: number;
-  count: number;
+
   // Add more fields as needed
 }
 
@@ -44,7 +44,7 @@ interface FarmCardProps {
 
 export const FarmCard = ({ farm }: FarmCardProps) => {
   // Get the product count
-  const productCount = farm.products?.[0]?.count || 0;
+  const productCount = farm.productCount || farm.products?.length || 0;
 
   // Get the first image if available
   const farmImage =
